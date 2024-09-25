@@ -1,0 +1,12 @@
+﻿services:
+#  saitynai-backend:
+#    image: saitynai-backend
+#    build:
+#      context: .
+#      dockerfile: saitynai-backend/Dockerfile
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=saitynai
+    ports:
+      - 5432:5432
