@@ -1,40 +1,118 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using saitynai_backend.Mediator.Commands.TimeSlots;
+using saitynai_backend.Mediator.Queries.TimeSlots;
 
 namespace saitynai_backend.Controllers;
 
 [Route("api/v1/organizations/{organizationId}/events/{eventId}/time-slots")]
 public class TimeSlotController : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public TimeSlotController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetTimeSlots(int organizationId, int eventId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var request = new GetTimeSlotsQuery()
+            {
+                OrganizationId = organizationId,
+                EventId = eventId
+            };
+
+            var result = await _mediator.Send(request);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
-    
+
     [HttpGet]
-    [Route("{id}")]
-    public async Task<IActionResult> GetTimeSlot(int organizationId, int eventId, int id)
+    [Route("{timeSlotId}")]
+    public async Task<IActionResult> GetTimeSlot(int organizationId, int eventId, int timeSlotId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var request = new GetTimeSlotQuery()
+            {
+                OrganizationId = organizationId,
+                EventId = eventId,
+                TimeSlotId = timeSlotId
+            };
+
+            var result = await _mediator.Send(request);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateTimeSlot(int organizationId, int eventId)
+    public async Task<IActionResult> CreateTimeSlot(int organizationId, int eventId, CreateTimeSlotCommand command)
     {
-        throw new NotImplementedException();
+        try
+        {
+            command.OrganizationId = organizationId;
+            command.EventId = eventId;
+            await _mediator.Send(command);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     
     [HttpPut]
-    [Route("{id}")]
-    public async Task<IActionResult> UpdateTimeSlot(int organizationId, int eventId, int id)
+    [Route("{timeSlotId}")]
+    public async Task<IActionResult> UpdateTimeSlot(
+        int organizationId,
+        int eventId,
+        int timeSlotId,
+        UpdateTimeSlotCommand command)
     {
-        throw new NotImplementedException();
+        try
+        {
+            command.OrganizationId = organizationId;
+            command.EventId = eventId;
+            command.TimeSlotId = timeSlotId;
+            await _mediator.Send(command);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     
     [HttpDelete]
-    [Route("{id}")]
-    public async Task<IActionResult> DeleteTimeSlot(int organizationId, int eventId, int id)
+    [Route("{timeSlotId}")]
+    public async Task<IActionResult> DeleteTimeSlot(int organizationId, int eventId, int timeSlotId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var command = new DeleteTimeSlotCommand()
+            {
+                OrganizationId = organizationId,
+                EventId = eventId,
+                TimeSlotId = timeSlotId
+            };
+            await _mediator.Send(command);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }
