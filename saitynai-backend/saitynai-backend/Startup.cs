@@ -33,6 +33,8 @@ public class Startup
         services.AddMvc();
         services.AddControllers();
         services.AddRazorPages();
+        
+        services.AddAutoMapper(typeof(Startup));
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
