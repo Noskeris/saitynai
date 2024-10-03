@@ -13,4 +13,7 @@ public class TimeSlot
     public int EventId { get; set; }
     public Event Event { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime LastModifiedAt { get; set; }
+    public bool IsAvailable { get; set; }
+    public bool IsCancelled { get; set; }
 }

@@ -1,0 +1,11 @@
+namespace saitynai_backend.Models.Events;
+
+public class EventResponse
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string Location { get; set; }
+    public string Requirements { get; set; }
+    
+}

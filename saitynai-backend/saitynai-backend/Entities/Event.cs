@@ -11,7 +11,10 @@ public class Event
     public string Name { get; set; }
     public string Description { get; set; }
     public int OrganizationId { get; set; }
+    public string Location { get; set; }
+    public string Requirements { get; set; }
     public Organization Organization { get; set; }
     public List<TimeSlot> TimeSlots { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime LastModifiedAt { get; set; }
 }
