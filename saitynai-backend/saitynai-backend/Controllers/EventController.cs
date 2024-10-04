@@ -18,93 +18,61 @@ public class EventController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetEvents(int organizationId)
     {
-        try
+        var request = new GetEventsQuery()
         {
-            var request = new GetEventsQuery()
-            {
-                OrganizationId = organizationId
-            };
-            
-            var events = await _mediator.Send(request);
-            return Ok(events);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+            OrganizationId = organizationId
+        };
+
+        var events = await _mediator.Send(request);
+        return Ok(events);
     }
-    
+
     [HttpGet]
     [Route("{eventId}")]
     public async Task<IActionResult> GetEvent(int organizationId, int eventId)
     {
-        try
+        var request = new GetEventQuery()
         {
-            var request = new GetEventQuery()
-            {
-                OrganizationId = organizationId,
-                EventId = eventId
-            };
-            
-            var events = await _mediator.Send(request);
-            return Ok(events);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+            OrganizationId = organizationId,
+            EventId = eventId
+        };
+
+        var events = await _mediator.Send(request);
+        return Ok(events);
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> CreateEvent(int organizationId, CreateEventCommand command)
     {
-        try
-        {
-            command.OrganizationId = organizationId;
-            await _mediator.Send(command);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        command.OrganizationId = organizationId;
+
+        await _mediator.Send(command);
+        return Ok();
     }
-    
+
     [HttpPut]
     [Route("{eventId}")]
-    public async Task<IActionResult> UpdateEvent(int organizationId, int eventId, UpdateEventCommand command)
+    public async Task<IActionResult> UpdateEvent(int organizationId, int eventId, [FromBody] UpdateEventCommand command)
     {
-        try
-        {
-            command.OrganizationId = organizationId;
-            command.EventId = eventId;
-            await _mediator.Send(command);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        command.OrganizationId = organizationId;
+        command.EventId = eventId;
+
+        await _mediator.Send(command);
+
+        return Ok();
     }
-    
+
     [HttpDelete]
     [Route("{eventId}")]
     public async Task<IActionResult> DeleteEvent(int organizationId, int id)
     {
-        try
+        var command = new DeleteEventCommand()
         {
-            var command = new DeleteEventCommand()
-            {
-                OrganizationId = organizationId,
-                EventId = id
-            };
-            
-            await _mediator.Send(command);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+            OrganizationId = organizationId,
+            EventId = id
+        };
+
+        await _mediator.Send(command);
+        return Ok();
     }
 }

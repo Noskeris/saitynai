@@ -22,7 +22,7 @@ namespace saitynai_backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("saitynai_backend.Models.Entities.Event", b =>
+            modelBuilder.Entity("saitynai_backend.Entities.Event", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,7 +37,7 @@ namespace saitynai_backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("LastModifiedAt")
+                    b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Location")
@@ -62,7 +62,7 @@ namespace saitynai_backend.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("saitynai_backend.Models.Entities.Organization", b =>
+            modelBuilder.Entity("saitynai_backend.Entities.Organization", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -88,7 +88,7 @@ namespace saitynai_backend.Migrations
                     b.Property<bool>("IsNonProfit")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("LastModifiedAt")
+                    b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Logo")
@@ -108,7 +108,7 @@ namespace saitynai_backend.Migrations
                     b.ToTable("Organizations");
                 });
 
-            modelBuilder.Entity("saitynai_backend.Models.Entities.TimeSlot", b =>
+            modelBuilder.Entity("saitynai_backend.Entities.TimeSlot", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -131,7 +131,7 @@ namespace saitynai_backend.Migrations
                     b.Property<bool>("IsCancelled")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("LastModifiedAt")
+                    b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("StartTime")
@@ -144,9 +144,9 @@ namespace saitynai_backend.Migrations
                     b.ToTable("TimeSlots");
                 });
 
-            modelBuilder.Entity("saitynai_backend.Models.Entities.Event", b =>
+            modelBuilder.Entity("saitynai_backend.Entities.Event", b =>
                 {
-                    b.HasOne("saitynai_backend.Models.Entities.Organization", "Organization")
+                    b.HasOne("saitynai_backend.Entities.Organization", "Organization")
                         .WithMany("Events")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -155,9 +155,9 @@ namespace saitynai_backend.Migrations
                     b.Navigation("Organization");
                 });
 
-            modelBuilder.Entity("saitynai_backend.Models.Entities.TimeSlot", b =>
+            modelBuilder.Entity("saitynai_backend.Entities.TimeSlot", b =>
                 {
-                    b.HasOne("saitynai_backend.Models.Entities.Event", "Event")
+                    b.HasOne("saitynai_backend.Entities.Event", "Event")
                         .WithMany("TimeSlots")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -166,12 +166,12 @@ namespace saitynai_backend.Migrations
                     b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("saitynai_backend.Models.Entities.Event", b =>
+            modelBuilder.Entity("saitynai_backend.Entities.Event", b =>
                 {
                     b.Navigation("TimeSlots");
                 });
 
-            modelBuilder.Entity("saitynai_backend.Models.Entities.Organization", b =>
+            modelBuilder.Entity("saitynai_backend.Entities.Organization", b =>
                 {
                     b.Navigation("Events");
                 });

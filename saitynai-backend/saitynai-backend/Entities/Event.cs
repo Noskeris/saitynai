@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace saitynai_backend.Entities;
 
-public class Event
+public class Event : Entity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public int OrganizationId { get; set; }
@@ -15,6 +12,4 @@ public class Event
     public string Requirements { get; set; }
     public Organization Organization { get; set; }
     public List<TimeSlot> TimeSlots { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime LastModifiedAt { get; set; }
 }

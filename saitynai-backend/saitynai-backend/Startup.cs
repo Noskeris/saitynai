@@ -1,3 +1,6 @@
+using saitynai_backend.Extensions;
+using saitynai_backend.Mediator.Commands.Events;
+
 namespace saitynai_backend;
 
 using Microsoft.OpenApi.Models;
@@ -35,6 +38,7 @@ public class Startup
         services.AddRazorPages();
         
         services.AddAutoMapper(typeof(Startup));
+        services.AddFluentValidation();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -60,5 +64,7 @@ public class Startup
             endpoints.MapControllers();
             endpoints.MapRazorPages();
         });
+        
+        app.UseAutomaticValidation();
     }
 }

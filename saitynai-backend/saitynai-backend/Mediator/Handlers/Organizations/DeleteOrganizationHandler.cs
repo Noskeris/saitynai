@@ -1,12 +1,38 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using saitynai_backend.Exceptions;
 using saitynai_backend.Mediator.Commands.Organizations;
 
 namespace saitynai_backend.Mediator.Handlers.Organizations;
 
 public class DeleteOrganizationHandler : IRequestHandler<DeleteOrganizationCommand>
 {
-    public Task Handle(DeleteOrganizationCommand request, CancellationToken cancellationToken)
+    private readonly Context _context;
+
+    public DeleteOrganizationHandler(Context context)
     {
-        throw new NotImplementedException();
+        _context = context;
+    }
+
+    public async Task Handle(DeleteOrganizationCommand request, CancellationToken cancellationToken)
+    {
+        var organization = _context.Organizations
+            .Include(x => x.Events)
+            .ThenInclude(x => x.TimeSlots)
+            .FirstOrDefault(x => x.Id == request.OrganizationId);
+        
+        if (organization == null)
+        {
+            throw new NotFoundException("Organization not found");
+        }
+        
+        if (organization.Events.Any(e => e.TimeSlots.Any(ts => ts.StartTime > DateTime.Now)))
+        {
+            throw new ConflictException("Cannot delete organization with active events");
+        }
+        
+        _context.Organizations.Remove(organization);
+        
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }
