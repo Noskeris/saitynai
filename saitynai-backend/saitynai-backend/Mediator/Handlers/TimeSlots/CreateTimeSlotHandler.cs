@@ -39,8 +39,9 @@ public class CreateTimeSlotHandler : IRequestHandler<CreateTimeSlotCommand, Time
             throw new NotFoundException("Event not found");
         }
         
-        if (@event.TimeSlots.Any(ts => 
-                ts.StartTime < request.StartTime 
+        if (@event.TimeSlots.Any(ts =>
+                !ts.IsCancelled
+                && ts.StartTime < request.EndTime
                 && ts.EndTime > request.StartTime))
         {
             throw new ConflictException("TimeSlot interferes with other timeslots");

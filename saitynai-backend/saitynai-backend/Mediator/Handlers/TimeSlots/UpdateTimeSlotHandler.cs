@@ -44,10 +44,29 @@ public class UpdateTimeSlotHandler : IRequestHandler<UpdateTimeSlotCommand, Time
         {
             throw new NotFoundException("TimeSlot not found");
         }
+
+        if (timeSlot.IsCancelled)
+        {
+            throw new ConflictException("TimeSlot is already cancelled and changes no longer possible");
+        }
+
+        if (timeSlot.StartTime < DateTime.Now)
+        {
+            throw new ConflictException("TimeSlot is in the past and changes no longer possible");
+        }
+
+        if (request.IsCancelled)
+        {
+            timeSlot.IsCancelled = true;
+            timeSlot.LastModifiedAt = DateTime.Now;
+            await _context.SaveChangesAsync(cancellationToken);
+            return _mapper.Map<TimeSlotResponse>(timeSlot);
+        }
         
-        if (@event.TimeSlots.Any(ts => 
-                ts.Id != request.TimeSlotId 
-                && ts.StartTime < request.StartTime 
+        if (@event.TimeSlots.Any(ts =>
+                ts.Id != request.TimeSlotId
+                && !ts.IsCancelled
+                && ts.StartTime < request.EndTime
                 && ts.EndTime > request.StartTime))
         {
             throw new ConflictException("TimeSlot interferes with other timeslots");

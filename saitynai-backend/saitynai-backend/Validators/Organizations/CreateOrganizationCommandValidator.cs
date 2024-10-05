@@ -3,9 +3,9 @@ using saitynai_backend.Mediator.Commands.Organizations;
 
 namespace saitynai_backend.Validators.Organizations;
 
-public class UpdateOrganizationCommandValidator : AbstractValidator<UpdateOrganizationCommand>
+public class CreateOrganizationCommandValidator : AbstractValidator<CreateOrganizationCommand>
 {
-    public UpdateOrganizationCommandValidator()
+    public CreateOrganizationCommandValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required.")
@@ -27,5 +27,8 @@ public class UpdateOrganizationCommandValidator : AbstractValidator<UpdateOrgani
         
         RuleFor(x => x.Logo)
             .NotEmpty().WithMessage("Logo is required.");
+
+        RuleFor(x => x.IsNonProfit)
+            .Must(x => x == false || x == true).WithMessage("IsNonProfit is required.");
     }
 }

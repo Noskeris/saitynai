@@ -26,9 +26,13 @@ public class DeleteOrganizationHandler : IRequestHandler<DeleteOrganizationComma
             throw new NotFoundException("Organization not found");
         }
         
-        if (organization.Events.Any(e => e.TimeSlots.Any(ts => ts.StartTime > DateTime.Now)))
+        if (organization.Events.
+            Any(e => e.TimeSlots
+                .Any(ts => 
+                    !ts.IsCancelled
+                    && ts.StartTime > DateTime.Now)))
         {
-            throw new ConflictException("Cannot delete organization with active events");
+            throw new ConflictException("Cannot delete organization with active time slots");
         }
         
         _context.Organizations.Remove(organization);

@@ -20,10 +20,25 @@ public class GetTimeSlotHandler : IRequestHandler<GetTimeSlotQuery, TimeSlotResp
 
     public async Task<TimeSlotResponse> Handle(GetTimeSlotQuery request, CancellationToken cancellationToken)
     {
-        var timeSlot = await _context.TimeSlots
-            .Include(ts => ts.Event)
-            .ThenInclude(e => e.Organization)
-            .FirstOrDefaultAsync(ts => ts.Id == request.TimeSlotId, cancellationToken);
+        var organization = await _context.Organizations
+            .Include(o => o.Events)
+            .ThenInclude(o => o.TimeSlots)
+            .FirstOrDefaultAsync(o => o.Id == request.OrganizationId,
+                cancellationToken);
+
+        if (organization == null)
+        {
+            throw new NotFoundException("Organization not found");
+        }
+        
+        var @event = organization.Events.FirstOrDefault(e => e.Id == request.EventId);
+        
+        if (@event == null)
+        {
+            throw new NotFoundException("Event not found");
+        }
+        
+        var timeSlot = @event.TimeSlots.FirstOrDefault(ts => ts.Id == request.TimeSlotId);
 
         if (timeSlot == null)
         {

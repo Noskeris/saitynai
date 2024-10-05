@@ -33,7 +33,9 @@ public class DeleteEventHandler : IRequestHandler<DeleteEventCommand>
             throw new NotFoundException("Event not found");
         }
 
-        if (@event.TimeSlots.Any(ts => ts.StartTime > DateTime.Now))
+        if (@event.TimeSlots.Any(ts => 
+                !ts.IsCancelled
+                && ts.StartTime > DateTime.Now))
         {
             throw new ConflictException("Cannot delete event with active timeslots");
         }
