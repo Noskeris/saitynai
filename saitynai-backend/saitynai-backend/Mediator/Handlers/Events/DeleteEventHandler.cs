@@ -37,7 +37,7 @@ public class DeleteEventHandler : IRequestHandler<DeleteEventCommand>
                 !ts.IsCancelled
                 && ts.StartTime > DateTime.Now))
         {
-            throw new ConflictException("Cannot delete event with active timeslots");
+            throw new ConflictException("Cannot delete event with active time slots");
         }
 
         _context.Events.Remove(@event);
