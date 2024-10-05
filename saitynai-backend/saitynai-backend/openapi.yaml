@@ -617,8 +617,8 @@ components:
             status: 400
             message: "Invalid Request Data"
             errors:
-              Name:
-                - "'Name' must not be empty."
+              $:
+                - "The JSON value could not be converted to saitynai_backend.Mediator.Commands.Organizations.CreateOrganizationCommand. Path: $ | LineNumber: 1 | BytePositionInLine: 8."
     notFound:
       description: "Resource was not found response"
       content:
