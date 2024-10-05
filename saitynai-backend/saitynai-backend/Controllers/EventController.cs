@@ -75,12 +75,12 @@ public class EventController : ControllerBase
     [Route("{eventId}")]
     public async Task<IActionResult> DeleteEvent(
         int organizationId,
-        int id)
+        int eventId)
     {
         var command = new DeleteEventCommand()
         {
             OrganizationId = organizationId,
-            EventId = id
+            EventId = eventId
         };
 
         await _mediator.Send(command);
