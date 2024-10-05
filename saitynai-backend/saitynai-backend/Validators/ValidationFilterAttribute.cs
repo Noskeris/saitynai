@@ -11,7 +11,7 @@ public class ValidationFilterAttribute : ActionFilterAttribute
     {
         if (context.ModelState.IsValid) return;
         
-        var isInvalidData = context.ModelState.Keys.Any(x => x.Equals("$"));
+        var isInvalidData = context.ModelState.Keys.Any(x => x.Contains("$"));
 
         if (isInvalidData)
         {
