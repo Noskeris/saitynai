@@ -1,8 +1,6 @@
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
-using saitynai_backend.Models;
 using saitynai_backend.Validators;
 
 namespace saitynai_backend;

@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using saitynai_backend.Entities;
 using saitynai_backend.Exceptions;
 using saitynai_backend.Mediator.Commands.TimeSlots;
+using saitynai_backend.Models.TimeSlots;
 
 namespace saitynai_backend.Mediator.Handlers.TimeSlots;
 
-public class CreateTimeSlotHandler : IRequestHandler<CreateTimeSlotCommand>
+public class CreateTimeSlotHandler : IRequestHandler<CreateTimeSlotCommand, TimeSlotResponse>
 {
     private readonly Context _context;
     private readonly IMapper _mapper;
@@ -18,7 +19,7 @@ public class CreateTimeSlotHandler : IRequestHandler<CreateTimeSlotCommand>
         _mapper = mapper;
     }
 
-    public async Task Handle(CreateTimeSlotCommand request, CancellationToken cancellationToken)
+    public async Task<TimeSlotResponse> Handle(CreateTimeSlotCommand request, CancellationToken cancellationToken)
     {
         var organization = await _context.Organizations
             .Include(o => o.Events)
@@ -50,5 +51,7 @@ public class CreateTimeSlotHandler : IRequestHandler<CreateTimeSlotCommand>
         _context.TimeSlots.Add(timeSlot);
         
         await _context.SaveChangesAsync(cancellationToken);
+        
+        return _mapper.Map<TimeSlotResponse>(timeSlot);
     }
 }

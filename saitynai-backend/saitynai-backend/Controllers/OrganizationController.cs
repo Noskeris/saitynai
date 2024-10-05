@@ -42,18 +42,20 @@ public class OrganizationController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateOrganization([FromBody] CreateOrganizationCommand command)
     {
-        await _mediator.Send(command);
-        return Ok();
+        var organization = await _mediator.Send(command);
+        return Created($"api/v1/organizations/{organization.Id}", organization);
     }
     
     [HttpPut]
     [Route("{organizationId}")]
-    public async Task<IActionResult> UpdateOrganization(int organizationId, [FromBody] UpdateOrganizationCommand command)
+    public async Task<IActionResult> UpdateOrganization(
+        int organizationId,
+        [FromBody] UpdateOrganizationCommand command)
     {
         command.OrganizationId = organizationId;
         
-        await _mediator.Send(command);
-        return Ok();
+        var organization = await _mediator.Send(command);
+        return Ok(organization);
     }
     
     [HttpDelete]
@@ -66,6 +68,6 @@ public class OrganizationController : ControllerBase
         };
         
         await _mediator.Send(command);
-        return Ok();
+        return NoContent();
     }
 }

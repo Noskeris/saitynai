@@ -3,10 +3,11 @@ using MediatR;
 using saitynai_backend.Entities;
 using saitynai_backend.Exceptions;
 using saitynai_backend.Mediator.Commands.Organizations;
+using saitynai_backend.Models.Organizations;
 
 namespace saitynai_backend.Mediator.Handlers.Organizations;
 
-public class CreateOrganizationHandler : IRequestHandler<CreateOrganizationCommand>
+public class CreateOrganizationHandler : IRequestHandler<CreateOrganizationCommand, OrganizationResponse>
 {
     private readonly Context _context;
     private readonly IMapper _mapper;
@@ -17,7 +18,7 @@ public class CreateOrganizationHandler : IRequestHandler<CreateOrganizationComma
         _mapper = mapper;
     }
 
-    public async Task Handle(CreateOrganizationCommand request, CancellationToken cancellationToken)
+    public async Task<OrganizationResponse> Handle(CreateOrganizationCommand request, CancellationToken cancellationToken)
     {
         if (_context.Organizations.Any(o => o.Name.ToLower() == request.Name.ToLower()))
         {
@@ -29,5 +30,7 @@ public class CreateOrganizationHandler : IRequestHandler<CreateOrganizationComma
         _context.Organizations.Add(organization);
         
         await _context.SaveChangesAsync(cancellationToken);
+        
+        return _mapper.Map<OrganizationResponse>(organization);
     }
 }

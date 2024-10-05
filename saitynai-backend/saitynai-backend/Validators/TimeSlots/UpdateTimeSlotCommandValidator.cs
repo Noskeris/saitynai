@@ -16,5 +16,8 @@ public class UpdateTimeSlotCommandValidator : AbstractValidator<UpdateTimeSlotCo
         
         RuleFor(x => x.IsAvailable)
             .NotEmpty().WithMessage("IsAvailable is required.");
+        
+        RuleFor(x => x.IsCancelled)
+            .NotEmpty().WithMessage("IsCancelled is required.");
     }
 }

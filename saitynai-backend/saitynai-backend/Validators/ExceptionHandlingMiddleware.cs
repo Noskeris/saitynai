@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text.Json;
-using FluentValidation;
 using saitynai_backend.Exceptions;
 using saitynai_backend.Models;
 

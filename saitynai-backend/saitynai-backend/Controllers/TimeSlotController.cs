@@ -18,54 +18,49 @@ public class TimeSlotController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetTimeSlots(int organizationId, int eventId)
+    public async Task<IActionResult> GetTimeSlots(
+        int organizationId,
+        int eventId)
     {
-        try
+        var request = new GetTimeSlotsQuery()
         {
-            var request = new GetTimeSlotsQuery()
-            {
-                OrganizationId = organizationId,
-                EventId = eventId
-            };
+            OrganizationId = organizationId,
+            EventId = eventId
+        };
 
-            var result = await _mediator.Send(request);
-            return Ok(result);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        var result = await _mediator.Send(request);
+        return Ok(result);
     }
 
     [HttpGet]
     [Route("{timeSlotId}")]
-    public async Task<IActionResult> GetTimeSlot(int organizationId, int eventId, int timeSlotId)
+    public async Task<IActionResult> GetTimeSlot(
+        int organizationId,
+        int eventId,
+        int timeSlotId)
     {
-        try
+        var request = new GetTimeSlotQuery()
         {
-            var request = new GetTimeSlotQuery()
-            {
-                OrganizationId = organizationId,
-                EventId = eventId,
-                TimeSlotId = timeSlotId
-            };
+            OrganizationId = organizationId,
+            EventId = eventId,
+            TimeSlotId = timeSlotId
+        };
 
-            var result = await _mediator.Send(request);
-            return Ok(result);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        var result = await _mediator.Send(request);
+        return Ok(result);
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateTimeSlot(int organizationId, int eventId, [FromBody] CreateTimeSlotCommand command)
+    public async Task<IActionResult> CreateTimeSlot(
+        int organizationId,
+        int eventId,
+        [FromBody] CreateTimeSlotCommand command)
     {
         command.OrganizationId = organizationId;
         command.EventId = eventId;
-        await _mediator.Send(command);
-        return Ok();
+        
+        var timeSlot = await _mediator.Send(command);
+        return Created($"api/v1/organizations/{organizationId}/events/{eventId}/time-slots/{timeSlot.Id}", timeSlot);
     }
     
     [HttpPut]
@@ -79,13 +74,17 @@ public class TimeSlotController : ControllerBase
         command.OrganizationId = organizationId;
         command.EventId = eventId;
         command.TimeSlotId = timeSlotId;
-        await _mediator.Send(command);
-        return Ok();
+        
+        var timeSlot = await _mediator.Send(command);
+        return Ok(timeSlot);
     }
     
     [HttpDelete]
     [Route("{timeSlotId}")]
-    public async Task<IActionResult> DeleteTimeSlot(int organizationId, int eventId, int timeSlotId)
+    public async Task<IActionResult> DeleteTimeSlot(
+        int organizationId,
+        int eventId,
+        int timeSlotId)
     {
         var command = new DeleteTimeSlotCommand()
         {
@@ -94,6 +93,6 @@ public class TimeSlotController : ControllerBase
             TimeSlotId = timeSlotId
         };
         await _mediator.Send(command);
-        return Ok();
+        return NoContent();
     }
 }

@@ -1,8 +1,9 @@
 using MediatR;
+using saitynai_backend.Models.Organizations;
 
 namespace saitynai_backend.Mediator.Commands.Organizations;
 
-public class UpdateOrganizationCommand : IRequest
+public class UpdateOrganizationCommand : IRequest<OrganizationResponse>
 {
     public int OrganizationId { get; set; }
     public string Name { get; set; }

@@ -3,10 +3,11 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using saitynai_backend.Exceptions;
 using saitynai_backend.Mediator.Commands.Events;
+using saitynai_backend.Models.Events;
 
 namespace saitynai_backend.Mediator.Handlers.Events;
 
-public class UpdateEventHandler : IRequestHandler<UpdateEventCommand>
+public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, EventResponse>
 {
     private readonly Context _context;
     private readonly IMapper _mapper;
@@ -17,7 +18,7 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand>
         _mapper = mapper;
     }
 
-    public async Task Handle(UpdateEventCommand request, CancellationToken cancellationToken)
+    public async Task<EventResponse> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
     {
         var organization = await _context.Organizations
             .Include(o => o.Events)
@@ -44,6 +45,8 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand>
         _mapper.Map(request, @event);
 
         await _context.SaveChangesAsync(cancellationToken);
+        
+        return _mapper.Map<EventResponse>(@event);
     }
 
 }

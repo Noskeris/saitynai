@@ -31,7 +31,9 @@ public class EventController : ControllerBase
 
     [HttpGet]
     [Route("{eventId}")]
-    public async Task<IActionResult> GetEvent(int organizationId, int eventId)
+    public async Task<IActionResult> GetEvent(
+        int organizationId,
+        int eventId)
     {
         var request = new GetEventQuery()
         {
@@ -44,29 +46,36 @@ public class EventController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateEvent(int organizationId, [FromBody] CreateEventCommand command)
+    public async Task<IActionResult> CreateEvent(
+        int organizationId,
+        [FromBody] CreateEventCommand command)
     {
         command.OrganizationId = organizationId;
 
-        await _mediator.Send(command);
-        return Ok();
+        var @event = await _mediator.Send(command);
+        return Created($"api/v1/organizations/{organizationId}/events/{@event.Id}", @event);
     }
 
     [HttpPut]
     [Route("{eventId}")]
-    public async Task<IActionResult> UpdateEvent(int organizationId, int eventId, [FromBody] UpdateEventCommand command)
+    public async Task<IActionResult> UpdateEvent(
+        int organizationId,
+        int eventId,
+        [FromBody] UpdateEventCommand command)
     {
         command.OrganizationId = organizationId;
         command.EventId = eventId;
 
-        await _mediator.Send(command);
+        var @event = await _mediator.Send(command);
 
-        return Ok();
+        return Ok(@event);
     }
 
     [HttpDelete]
     [Route("{eventId}")]
-    public async Task<IActionResult> DeleteEvent(int organizationId, int id)
+    public async Task<IActionResult> DeleteEvent(
+        int organizationId,
+        int id)
     {
         var command = new DeleteEventCommand()
         {
@@ -75,6 +84,6 @@ public class EventController : ControllerBase
         };
 
         await _mediator.Send(command);
-        return Ok();
+        return NoContent();
     }
 }
