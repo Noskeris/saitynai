@@ -17,6 +17,11 @@ public class Context : DbContext
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(_configuration.GetConnectionString(("PostgreSQL")));
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
+        var connectionString = configuration["SqlServer:ConnectionString"];
+        optionsBuilder.UseSqlServer(connectionString);
     }
 }

@@ -11,5 +11,5 @@ public class Event : Entity
     public string Location { get; set; }
     public string Requirements { get; set; }
     public Organization Organization { get; set; }
-    public List<TimeSlot> TimeSlots { get; set; }
+    public List<TimeSlot> TimeSlots { get; set; } = new();
 }

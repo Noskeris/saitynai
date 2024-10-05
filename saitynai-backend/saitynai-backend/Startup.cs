@@ -1,5 +1,9 @@
-using saitynai_backend.Extensions;
-using saitynai_backend.Mediator.Commands.Events;
+using System.Reflection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
+using saitynai_backend.Models;
+using saitynai_backend.Validators;
 
 namespace saitynai_backend;
 
@@ -34,11 +38,17 @@ public class Startup
         });
 
         services.AddMvc();
-        services.AddControllers();
+        services.AddControllers(options =>
+        {
+            options.Filters.Add<ValidationFilterAttribute>();
+        });
         services.AddRazorPages();
         
+        services.AddFluentValidationAutoValidation();
+
+        services.AddValidatorsFromAssemblyContaining<Startup>();
         services.AddAutoMapper(typeof(Startup));
-        services.AddFluentValidation();
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -48,6 +58,8 @@ public class Startup
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Event managing API");
         });
+        
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         app.UseRouting();
         app.UseHttpsRedirection();
@@ -64,7 +76,5 @@ public class Startup
             endpoints.MapControllers();
             endpoints.MapRazorPages();
         });
-        
-        app.UseAutomaticValidation();
     }
 }

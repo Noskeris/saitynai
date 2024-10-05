@@ -2,10 +2,12 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using saitynai_backend.Mediator.Commands.Organizations;
 using saitynai_backend.Mediator.Queries.Organizations;
+using saitynai_backend.Validators;
 
 namespace saitynai_backend.Controllers;
 
 [Route("api/v1/organizations")]
+[ValidationFilter]
 public class OrganizationController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -18,83 +20,52 @@ public class OrganizationController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetOrganizations()
     {
-        try
-        {
-            var request = new GetOrganizationsQuery();
-            var result = await _mediator.Send(request);
-            return Ok(result);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        var request = new GetOrganizationsQuery();
+        
+        var result = await _mediator.Send(request);
+        return Ok(result);
     }
 
     [HttpGet]
     [Route("{organizationId}")]
     public async Task<IActionResult> GetOrganization(int organizationId)
     {
-        try
+        var request = new GetOrganizationQuery()
         {
-            var request = new GetOrganizationQuery()
-            {
-                OrganizationId = organizationId
-            };
-            var result = await _mediator.Send(request);
-            return Ok(result);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+            OrganizationId = organizationId
+        };
+        
+        var result = await _mediator.Send(request);
+        return Ok(result);
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateOrganization(CreateOrganizationCommand command)
+    public async Task<IActionResult> CreateOrganization([FromBody] CreateOrganizationCommand command)
     {
-        try
-        {
-            await _mediator.Send(command);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        await _mediator.Send(command);
+        return Ok();
     }
     
     [HttpPut]
     [Route("{organizationId}")]
-    public async Task<IActionResult> UpdateOrganization(int organizationId, UpdateOrganizationCommand command)
+    public async Task<IActionResult> UpdateOrganization(int organizationId, [FromBody] UpdateOrganizationCommand command)
     {
-        try
-        {
-            command.OrganizationId = organizationId;
-            await _mediator.Send(command);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        command.OrganizationId = organizationId;
+        
+        await _mediator.Send(command);
+        return Ok();
     }
     
     [HttpDelete]
     [Route("{organizationId}")]
     public async Task<IActionResult> DeleteOrganization(int organizationId)
     {
-        try
+        var command = new DeleteOrganizationCommand()
         {
-            var command = new DeleteOrganizationCommand()
-            {
-                OrganizationId = organizationId
-            };
-            await _mediator.Send(command);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+            OrganizationId = organizationId
+        };
+        
+        await _mediator.Send(command);
+        return Ok();
     }
 }

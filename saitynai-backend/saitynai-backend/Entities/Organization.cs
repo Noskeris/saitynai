@@ -12,5 +12,5 @@ public class Organization : Entity
     public string Website { get; set; }
     public string Logo { get; set; }
     public bool IsNonProfit { get; set; }
-    public List<Event> Events { get; set; }
+    public List<Event> Events { get; set; } = new();
 }

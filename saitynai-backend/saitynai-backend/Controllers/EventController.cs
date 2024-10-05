@@ -2,10 +2,12 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using saitynai_backend.Mediator.Commands.Events;
 using saitynai_backend.Mediator.Queries.Events;
+using saitynai_backend.Validators;
 
 namespace saitynai_backend.Controllers;
 
 [Route("api/v1/organizations/{organizationId}/events")]
+[ValidationFilter]
 public class EventController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -42,7 +44,7 @@ public class EventController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateEvent(int organizationId, CreateEventCommand command)
+    public async Task<IActionResult> CreateEvent(int organizationId, [FromBody] CreateEventCommand command)
     {
         command.OrganizationId = organizationId;
 
