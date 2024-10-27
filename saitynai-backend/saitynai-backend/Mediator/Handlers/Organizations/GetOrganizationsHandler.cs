@@ -20,6 +20,7 @@ public class GetOrganizationsHandler : IRequestHandler<GetOrganizationsQuery, Or
     public async Task<OrganizationsResponse> Handle(GetOrganizationsQuery request, CancellationToken cancellationToken)
     {
         var organizations = await _context.Organizations
+            .OrderBy(x => x.Name)
             .ToListAsync(cancellationToken);
 
         return _mapper.Map<OrganizationsResponse>(organizations);

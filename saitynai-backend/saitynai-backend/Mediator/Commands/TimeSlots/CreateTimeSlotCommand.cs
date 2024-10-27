@@ -5,6 +5,7 @@ namespace saitynai_backend.Mediator.Commands.TimeSlots;
 
 public class CreateTimeSlotCommand : IRequest<TimeSlotResponse>
 {
+    public string? UserId { get; set; }
     public int OrganizationId { get; set; }
     public int EventId { get; set; }
     public DateTime StartTime { get; set; }

@@ -30,6 +30,11 @@ public class CreateEventHandler : IRequestHandler<CreateEventCommand, EventRespo
         {
             throw new NotFoundException("Organization not found");
         }
+        
+        if (organization.UserId != request.UserId)
+        {
+            throw new ForbiddenException("Cannot create event for another organization");
+        }
 
         if (organization.Events.Any(e => e.Name.ToLower() == request.Name.ToLower()))
         {

@@ -29,6 +29,11 @@ public class GetOrganizationHandler : IRequestHandler<GetOrganizationQuery, Orga
             throw new NotFoundException("Organization not found");
         }
 
+        if (request.OrganizerId != null && organization.UserId != request.OrganizerId)
+        {
+            throw new ForbiddenException("Organizers are not allowed to view other organizations");
+        }
+
         return _mapper.Map<OrganizationResponse>(organization);
     }
 }

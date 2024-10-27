@@ -9,13 +9,27 @@ public class TimeSlotProfile : Profile
 {
     public TimeSlotProfile()
     {
-        CreateMap<TimeSlot, TimeSlotResponse>();
+        CreateMap<TimeSlot, TimeSlotResponse>()
+            .ForMember(dest => dest.ParticipantsCount, opt=> opt.MapFrom(src=> src.Participants.Count));
         CreateMap<List<TimeSlot>, TimeSlotsResponse>()
             .ForMember(dest => dest.TimeSlots, opt => opt.MapFrom(src => src));
         CreateMap<UpdateTimeSlotCommand, TimeSlot>()
             .ForMember(dest => dest.LastModifiedAt, opt => opt.MapFrom(src => DateTime.Now));
         CreateMap<CreateTimeSlotCommand, TimeSlot>()
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));
-
+        CreateMap<TimeSlot, TimeSlotUserResponse>()
+            .IncludeBase<TimeSlot, TimeSlotResponse>()
+            .ForMember(dest => dest.IsParticipant, opt => 
+                opt.MapFrom((src, dest, destMember, context) => 
+                    src.Participants.Any(p => p.Id == context.Items["UserId"] as string)));
+        CreateMap<List<TimeSlot>, TimeSlotsResponse>()
+            .ForMember(dest => dest.TimeSlots, opt => 
+                opt.MapFrom((src, dest, destMember, context) => 
+                    src.Select(ts => 
+                    {
+                        var timeSlotUserResponse = context.Mapper.Map<TimeSlotUserResponse>(ts);
+                        timeSlotUserResponse.IsParticipant = ts.Participants.Any(p => p.Id == context.Items["UserId"] as string);
+                        return timeSlotUserResponse;
+                    }).ToList()));
     }
 }

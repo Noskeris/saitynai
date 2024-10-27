@@ -5,6 +5,7 @@ namespace saitynai_backend.Mediator.Commands.Events;
 
 public class UpdateEventCommand : IRequest<EventResponse>
 {
+    public string UserId { get; set; }
     public int OrganizationId { get; set; }
     public int EventId { get; set; }
     public string Name { get; set; }

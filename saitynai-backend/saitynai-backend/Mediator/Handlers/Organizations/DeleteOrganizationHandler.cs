@@ -25,6 +25,11 @@ public class DeleteOrganizationHandler : IRequestHandler<DeleteOrganizationComma
         {
             throw new NotFoundException("Organization not found");
         }
+
+        if (organization.UserId != request.UserId)
+        {
+            throw new ForbiddenException("Cannot delete organization that does not belong to you");
+        }
         
         if (organization.Events.
             Any(e => e.TimeSlots

@@ -28,6 +28,11 @@ public class UpdateOrganizationHandler : IRequestHandler<UpdateOrganizationComma
             throw new NotFoundException("Organization not found");
         }
         
+        if (organization.UserId != request.UserId)
+        {
+            throw new ForbiddenException("Cannot update organization that does not belong to you");
+        }
+        
         if (await _context.Organizations
                 .AnyAsync(o => o.Name.ToLower() == request.Name.ToLower() 
                                && o.Id != request.OrganizationId, cancellationToken))

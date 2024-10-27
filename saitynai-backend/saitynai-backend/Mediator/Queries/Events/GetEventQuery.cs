@@ -7,4 +7,5 @@ public class GetEventQuery : IRequest<EventResponse>
 {
     public int OrganizationId { get; set; }
     public int EventId { get; set; }
+    public string? OrganizerId { get; set; }
 }

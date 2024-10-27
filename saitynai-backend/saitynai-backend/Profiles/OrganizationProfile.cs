@@ -10,10 +10,8 @@ public class OrganizationProfile : Profile
     public OrganizationProfile()
     {
         CreateMap<Organization, OrganizationResponse>();
-        
         CreateMap<List<Organization>, OrganizationsResponse>()
             .ForMember(dest => dest.Organizations, opt => opt.MapFrom(src => src));
-        
         CreateMap<UpdateOrganizationCommand, Organization>()
             .ForMember(dest => dest.LastModifiedAt, opt => opt.MapFrom(src => DateTime.Now));
         CreateMap<CreateOrganizationCommand, Organization>()

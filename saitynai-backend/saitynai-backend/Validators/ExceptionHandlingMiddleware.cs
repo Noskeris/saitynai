@@ -54,6 +54,36 @@ public class ExceptionHandlingMiddleware
                     { "details", [conflictException.Message] }
                 };
                 break;
+            
+            case UnauthorizedException unauthorizedException:
+                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                errorResponse.Status = response.StatusCode;
+                errorResponse.Message = "Unauthorized";
+                errorResponse.Errors = new()
+                {
+                    { "details", [unauthorizedException.Message] }
+                };
+                break;
+            
+            case AccessException accessException:
+                response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
+                errorResponse.Status = response.StatusCode;
+                errorResponse.Message = "Unprocessable Entity";
+                errorResponse.Errors = new()
+                {
+                    { "details", [accessException.Message] }
+                };
+                break;
+            
+            case ForbiddenException forbiddenException:
+                response.StatusCode = (int)HttpStatusCode.Forbidden;
+                errorResponse.Status = response.StatusCode;
+                errorResponse.Message = "Forbidden";
+                errorResponse.Errors = new()
+                {
+                    { "details", [forbiddenException.Message] }
+                };
+                break;
 
             default:
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;

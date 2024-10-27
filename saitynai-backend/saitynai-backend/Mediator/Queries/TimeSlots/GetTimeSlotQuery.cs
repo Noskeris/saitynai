@@ -8,4 +8,5 @@ public class GetTimeSlotQuery : IRequest<TimeSlotResponse>
     public int OrganizationId { get; set; }
     public int EventId { get; set; }
     public int TimeSlotId { get; set; }
+    public string? OrganizerId { get; set; }
 }

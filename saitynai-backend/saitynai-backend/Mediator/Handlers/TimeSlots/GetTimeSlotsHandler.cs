@@ -31,6 +31,11 @@ public class GetTimeSlotsHandler : IRequestHandler<GetTimeSlotsQuery, TimeSlotsR
             throw new NotFoundException("Organization not found");
         }
         
+        if (request.OrganizerId != null && organization.UserId != request.OrganizerId)
+        {
+            throw new ForbiddenException("Organizers are not allowed to view other organizations");
+        }
+        
         var @event = organization.Events.FirstOrDefault(e => e.Id == request.EventId);
         
         if (@event == null)
@@ -38,6 +43,6 @@ public class GetTimeSlotsHandler : IRequestHandler<GetTimeSlotsQuery, TimeSlotsR
             throw new NotFoundException("Event not found");
         }
         
-        return _mapper.Map<TimeSlotsResponse>(@event.TimeSlots);
+        return _mapper.Map<TimeSlotsResponse>(@event.TimeSlots.OrderBy(x => x.StartTime));
     }
 }

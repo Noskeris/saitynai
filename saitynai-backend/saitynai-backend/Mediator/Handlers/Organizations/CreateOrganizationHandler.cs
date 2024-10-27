@@ -20,6 +20,11 @@ public class CreateOrganizationHandler : IRequestHandler<CreateOrganizationComma
 
     public async Task<OrganizationResponse> Handle(CreateOrganizationCommand request, CancellationToken cancellationToken)
     {
+        if (_context.Organizations.Any(o => o.UserId == request.UserId))
+        {
+            throw new ConflictException("Organizer already has an organization");
+        }
+        
         if (_context.Organizations.Any(o => o.Name.ToLower() == request.Name.ToLower()))
         {
             throw new ConflictException("Organization with this name already exists");

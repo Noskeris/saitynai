@@ -32,6 +32,11 @@ public class CreateTimeSlotHandler : IRequestHandler<CreateTimeSlotCommand, Time
             throw new NotFoundException("Organization not found");
         }
         
+        if (organization.UserId != request.UserId)
+        {
+            throw new ForbiddenException("Cannot create timeslot for another organization");
+        }
+        
         var @event = organization.Events.FirstOrDefault(e => e.Id == request.EventId);
         
         if (@event == null)

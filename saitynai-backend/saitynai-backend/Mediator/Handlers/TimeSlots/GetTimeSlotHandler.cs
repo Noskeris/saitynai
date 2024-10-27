@@ -31,6 +31,11 @@ public class GetTimeSlotHandler : IRequestHandler<GetTimeSlotQuery, TimeSlotResp
             throw new NotFoundException("Organization not found");
         }
         
+        if (request.OrganizerId != null && organization.UserId != request.OrganizerId)
+        {
+            throw new ForbiddenException("Organizers are not allowed to view other organizations");
+        }
+        
         var @event = organization.Events.FirstOrDefault(e => e.Id == request.EventId);
         
         if (@event == null)

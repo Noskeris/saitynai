@@ -27,6 +27,11 @@ public class DeleteTimeSlotHandler : IRequestHandler<DeleteTimeSlotCommand>
             throw new NotFoundException("Organization not found");
         }
         
+        if (organization.UserId != request.UserId)
+        {
+            throw new ForbiddenException("Cannot delete timeslot of another organization");
+        }
+        
         var @event = organization.Events.FirstOrDefault(e => e.Id == request.EventId);
         
         if (@event == null)

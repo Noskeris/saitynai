@@ -12,4 +12,5 @@ public class CreateOrganizationCommand : IRequest<OrganizationResponse>
     public string Website { get; set; }
     public string Logo { get; set; }
     public bool IsNonProfit { get; set; }
+    public string UserId { get; set; }
 }

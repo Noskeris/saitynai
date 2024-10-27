@@ -29,6 +29,11 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, EventRespo
         {
             throw new NotFoundException("Organization not found");
         }
+        
+        if (organization.UserId != request.UserId)
+        {
+            throw new ForbiddenException("Cannot update event of another organization");
+        }
 
         var @event = organization.Events.FirstOrDefault(e => e.Id == request.EventId);
 
@@ -48,5 +53,4 @@ public class UpdateEventHandler : IRequestHandler<UpdateEventCommand, EventRespo
         
         return _mapper.Map<EventResponse>(@event);
     }
-
 }

@@ -5,6 +5,7 @@ namespace saitynai_backend.Mediator.Commands.Organizations;
 
 public class UpdateOrganizationCommand : IRequest<OrganizationResponse>
 {
+    public string UserId { get; set; }
     public int OrganizationId { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }

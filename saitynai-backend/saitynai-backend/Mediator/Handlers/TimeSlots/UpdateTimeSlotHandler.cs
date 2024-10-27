@@ -31,6 +31,11 @@ public class UpdateTimeSlotHandler : IRequestHandler<UpdateTimeSlotCommand, Time
             throw new NotFoundException("Organization not found");
         }
         
+        if (organization.UserId != request.UserId)
+        {
+            throw new ForbiddenException("Cannot update timeslot of another organization");
+        }
+        
         var @event = organization.Events.FirstOrDefault(e => e.Id == request.EventId);
         
         if (@event == null)

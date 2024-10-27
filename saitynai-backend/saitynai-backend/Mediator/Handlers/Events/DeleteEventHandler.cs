@@ -25,6 +25,11 @@ public class DeleteEventHandler : IRequestHandler<DeleteEventCommand>
         {
             throw new NotFoundException("Organization not found");
         }
+        
+        if (organization.UserId != request.UserId)
+        {
+            throw new ForbiddenException("Cannot delete event of another organization");
+        }
 
         var @event = organization.Events.FirstOrDefault(e => e.Id == request.EventId);
 
