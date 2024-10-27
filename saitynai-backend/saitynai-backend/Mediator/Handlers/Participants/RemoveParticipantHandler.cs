@@ -47,6 +47,11 @@ public class RemoveParticipantHandler : IRequestHandler<RemoveParticipantCommand
             throw new NotFoundException("Time slot not found");
         }
         
+        if (timeSlot.IsCancelled || timeSlot.StartTime < DateTime.Now)
+        {
+            throw new ConflictException("Time slot is no longer available for changes");
+        }
+        
         if (timeSlot.Participants.All(p => p.Id != request.UserId))
         {
             throw new ConflictException("User is not a participant");

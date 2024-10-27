@@ -24,8 +24,5 @@ public class UpdateOrganizationCommandValidator : AbstractValidator<UpdateOrgani
 
         RuleFor(x => x.Website)
             .NotEmpty().WithMessage("Website is required.");
-        
-        RuleFor(x => x.Logo)
-            .NotEmpty().WithMessage("Logo is required.");
     }
 }

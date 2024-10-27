@@ -1,9 +1,4 @@
 ﻿services:
-#  saitynai-backend:
-#    image: saitynai-backend
-#    build:
-#      context: .
-#      dockerfile: saitynai-backend/Dockerfile
   sql:
     image: mcr.microsoft.com/azure-sql-edge
     container_name: sql

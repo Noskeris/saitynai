@@ -19,6 +19,7 @@ public class DeleteEventHandler : IRequestHandler<DeleteEventCommand>
         var organization = _context.Organizations
             .Include(o => o.Events)
             .ThenInclude(o => o.TimeSlots)
+            .ThenInclude(o => o.Participants)
             .FirstOrDefault(o => o.Id == request.OrganizationId);
 
         if (organization == null)
@@ -44,6 +45,8 @@ public class DeleteEventHandler : IRequestHandler<DeleteEventCommand>
         {
             throw new ConflictException("Cannot delete event with active time slots");
         }
+        
+        @event.TimeSlots.ForEach(x => x.Participants.RemoveAll(_ => true));
 
         _context.Events.Remove(@event);
 

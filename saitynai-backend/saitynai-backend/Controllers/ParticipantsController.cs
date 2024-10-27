@@ -29,7 +29,7 @@ public class ParticipantsController : ControllerBase
             TimeSlotId = timeSlotId,
             OrganizerId = User.GetUserId()
         });
-        return Ok();
+        return Ok(response);
     }
     
     [HttpPost]
@@ -57,6 +57,11 @@ public class ParticipantsController : ControllerBase
         if (User.HasRole(Role.Organizer))
         {
             organizerId = User.GetUserId();
+        }
+
+        if (User.HasRole(Role.User) && User.GetUserId() != participantId)
+        {
+            return Forbid();
         }
         
         await _mediator.Send(new RemoveParticipantCommand()

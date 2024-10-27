@@ -8,8 +8,8 @@ public class ParticipantsProfile : Profile
 {
     public ParticipantsProfile()
     {
+        CreateMap<User, ParticipantResponse>();
         CreateMap<List<User>, ParticipantsResponse>()
             .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src));
-
     }
 }

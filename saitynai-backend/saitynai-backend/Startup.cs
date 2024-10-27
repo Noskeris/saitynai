@@ -5,6 +5,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using saitynai_backend.Auth;
 using saitynai_backend.Entities;
@@ -26,6 +27,10 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<Context>();
+        using (var context = new Context(_configuration))
+        {
+            context.Database.Migrate();
+        }
 
         services.AddSwaggerGen(c =>
         {
@@ -38,6 +43,20 @@ public class Startup
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
                 Description = "Enter: Bearer <token>"
+            });
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
             });
         });
 
@@ -77,6 +96,10 @@ public class Startup
             .AddEntityFrameworkStores<Context>()
             .AddDefaultTokenProviders();
 
+        services.AddScoped<JwtTokenService>();
+        services.AddScoped<AuthSeeder>();
+        services.AddScoped<SessionService>();
+        
         services.AddAuthentication(x =>
         {
             x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -90,11 +113,8 @@ public class Startup
             x.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"] ?? throw new InvalidOperationException()));
         });
-
-        services.AddScoped<JwtTokenService>();
+        
         services.AddAuthorization();
-        services.AddScoped<AuthSeeder>();
-        services.AddScoped<SessionService>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)

@@ -46,6 +46,16 @@ public class AddParticipantHandler : IRequestHandler<AddParticipantCommand>
         {
             throw new ConflictException("User is already a participant");
         }
+
+        if (timeSlot.IsCancelled || !timeSlot.IsAvailable || timeSlot.StartTime < DateTime.Now)
+        {
+            throw new ConflictException("Time slot is not available for registration");
+        }
+
+        if (timeSlot.MaxParticipants is not null && timeSlot.Participants.Count >= timeSlot.MaxParticipants)
+        {
+            throw new ConflictException("Time slot is full");
+        }
         
         var user = _context.Users.First(x => x.Id == request.UserId);
         

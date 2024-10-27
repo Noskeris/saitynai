@@ -13,4 +13,5 @@ public class UpdateTimeSlotCommand : IRequest<TimeSlotResponse>
     public DateTime EndTime { get; set; }
     public bool IsAvailable { get; set; }
     public bool IsCancelled { get; set; }
+    public int? MaxParticipants { get; set; }
 }

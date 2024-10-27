@@ -19,12 +19,11 @@ public class Context : IdentityDbContext<User>
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        IConfigurationRoot configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .Build();
-        var connectionString = configuration["SqlServer:ConnectionString"];
-        optionsBuilder.UseSqlServer(connectionString);
+        if (!optionsBuilder.IsConfigured)
+        {
+            var connectionString = _configuration["SqlServer:ConnectionString"];
+            optionsBuilder.UseSqlServer(connectionString);
+        }
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

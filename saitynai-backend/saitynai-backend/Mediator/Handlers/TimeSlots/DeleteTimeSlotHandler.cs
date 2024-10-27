@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using saitynai_backend.Entities;
 using saitynai_backend.Exceptions;
 using saitynai_backend.Mediator.Commands.TimeSlots;
 
@@ -19,6 +20,7 @@ public class DeleteTimeSlotHandler : IRequestHandler<DeleteTimeSlotCommand>
         var organization = await _context.Organizations
             .Include(o => o.Events)
             .ThenInclude(o => o.TimeSlots)
+            .ThenInclude(timeSlot => timeSlot.Participants)
             .FirstOrDefaultAsync(o => o.Id == request.OrganizationId,
                 cancellationToken);
 
@@ -46,8 +48,11 @@ public class DeleteTimeSlotHandler : IRequestHandler<DeleteTimeSlotCommand>
             throw new NotFoundException("Time slot not found");
         }
 
+        timeSlot.Participants.RemoveAll(_ => true);
+        _context.TimeSlots.Update(timeSlot);
+        await _context.SaveChangesAsync(cancellationToken);
+        
         _context.TimeSlots.Remove(timeSlot);
-
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

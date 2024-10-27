@@ -24,9 +24,6 @@ public class CreateOrganizationCommandValidator : AbstractValidator<CreateOrgani
 
         RuleFor(x => x.Website)
             .NotEmpty().WithMessage("Website is required.");
-        
-        RuleFor(x => x.Logo)
-            .NotEmpty().WithMessage("Logo is required.");
 
         RuleFor(x => x.IsNonProfit)
             .Must(x => x == false || x == true).WithMessage("IsNonProfit is required.");

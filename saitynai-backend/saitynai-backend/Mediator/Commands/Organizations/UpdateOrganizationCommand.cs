@@ -12,5 +12,4 @@ public class UpdateOrganizationCommand : IRequest<OrganizationResponse>
     public string ContactInfo { get; set; }
     public string Address { get; set; }
     public string Website { get; set; }
-    public string Logo { get; set; }
 }

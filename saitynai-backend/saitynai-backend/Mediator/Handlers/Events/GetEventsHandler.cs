@@ -34,6 +34,6 @@ public class GetEventsHandler : IRequestHandler<GetEventsQuery, EventsResponse>
             throw new ForbiddenException("Organizers are not allowed to view other organizations");
         }
 
-        return _mapper.Map<EventsResponse>(organization.Events.OrderBy(x => x.Name));
+        return _mapper.Map<EventsResponse>(organization.Events.OrderBy(x => x.Name).ToList());
     }
 }

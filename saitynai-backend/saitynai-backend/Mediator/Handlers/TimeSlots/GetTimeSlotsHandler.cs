@@ -23,6 +23,7 @@ public class GetTimeSlotsHandler : IRequestHandler<GetTimeSlotsQuery, TimeSlotsR
         var organization = await _context.Organizations
             .Include(o => o.Events)
             .ThenInclude(o => o.TimeSlots)
+            .ThenInclude(o => o.Participants)
             .FirstOrDefaultAsync(o => o.Id == request.OrganizationId,
                 cancellationToken);
 
@@ -43,6 +44,6 @@ public class GetTimeSlotsHandler : IRequestHandler<GetTimeSlotsQuery, TimeSlotsR
             throw new NotFoundException("Event not found");
         }
         
-        return _mapper.Map<TimeSlotsResponse>(@event.TimeSlots.OrderBy(x => x.StartTime));
+        return _mapper.Map<TimeSlotsResponse>(@event.TimeSlots.OrderBy(x => x.StartTime).ToList());
     }
 }

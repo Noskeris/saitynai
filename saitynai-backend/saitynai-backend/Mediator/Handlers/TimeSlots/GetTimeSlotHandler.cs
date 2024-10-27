@@ -23,6 +23,7 @@ public class GetTimeSlotHandler : IRequestHandler<GetTimeSlotQuery, TimeSlotResp
         var organization = await _context.Organizations
             .Include(o => o.Events)
             .ThenInclude(o => o.TimeSlots)
+            .ThenInclude(o => o.Participants)
             .FirstOrDefaultAsync(o => o.Id == request.OrganizationId,
                 cancellationToken);
 

@@ -51,6 +51,6 @@ public class GetParticipantsHandler : IRequestHandler<GetParticipantsQuery, Part
             throw new NotFoundException("Time slot not found");
         }
         
-        return _mapper.Map<ParticipantsResponse>(timeSlot.Participants);
+        return _mapper.Map<ParticipantsResponse>(timeSlot.Participants.ToList());
     }
 }

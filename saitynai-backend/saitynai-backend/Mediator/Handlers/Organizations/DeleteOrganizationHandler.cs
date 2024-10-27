@@ -39,6 +39,8 @@ public class DeleteOrganizationHandler : IRequestHandler<DeleteOrganizationComma
         {
             throw new ConflictException("Cannot delete organization with active time slots");
         }
+
+        organization.Events.ForEach(e => e.TimeSlots.ForEach(ts => ts.Participants.RemoveAll(_ => true)));
         
         _context.Organizations.Remove(organization);
         

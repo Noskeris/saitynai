@@ -83,7 +83,8 @@ public class RefreshHandler : IRequestHandler<RefreshCommand, AccessTokenRespons
         {
             HttpOnly = true,
             SameSite = SameSiteMode.Lax,
-            Expires = expiresAt
+            Expires = expiresAt,
+            Secure = true
         };
         
         _httpContext.Response.Cookies.Append("RefreshToken", newRefreshToken, cookieOptions);

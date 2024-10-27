@@ -2,5 +2,5 @@ namespace saitynai_backend.Models.TimeSlots;
 
 public class TimeSlotsUserResponse
 {
-    public List<TimeSlotUserResponse> TimeSlots { get; set; }
+    public IEnumerable<TimeSlotUserResponse> TimeSlots { get; set; }
 }
