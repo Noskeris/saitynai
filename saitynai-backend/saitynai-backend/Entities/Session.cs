@@ -11,6 +11,6 @@ public class Session
     public bool IsRevoked { get; set; }
     
     [Required]
-    public string UserId { get; set; }
+    public string UserId { get; set; } = "";
     public User User { get; set; }
 }

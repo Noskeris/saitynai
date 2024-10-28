@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace saitynai_backend.Entities;
 
@@ -11,8 +12,7 @@ public class Organization : Entity
     public string Website { get; set; }
     public bool IsNonProfit { get; set; }
     public List<Event> Events { get; set; } = new();
-    
-    [Required]
-    public required string UserId { get; set; }
+    [JsonIgnore]
+    public string UserId { get; set; } = "";
     public User User { get; set; }
 }
