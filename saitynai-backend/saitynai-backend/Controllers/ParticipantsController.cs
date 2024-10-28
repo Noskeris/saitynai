@@ -50,6 +50,7 @@ public class ParticipantsController : ControllerBase
     
     [HttpDelete]
     [Route("{participantId}")]
+    [Authorize(Roles = $"{Role.User},{Role.Organizer}")]
     public async Task<IActionResult> RemoveParticipant(int organizationId, int eventId, int timeSlotId, string participantId)
     {
         string? organizerId = null;
