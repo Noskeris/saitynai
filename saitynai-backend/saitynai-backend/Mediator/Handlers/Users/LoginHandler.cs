@@ -45,6 +45,8 @@ public class LoginHandler : IRequestHandler<LoginCommand, AccessTokenResponse>
             throw new NotFoundException("Incorrect username or password");
         }
 
+        await _sessionService.InvalidateSessionsByUserIdAsync(user.Id);
+
         var roles = await _userManager.GetRolesAsync(user);
 
         var sessionId = Guid.NewGuid();

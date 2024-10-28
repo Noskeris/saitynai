@@ -52,6 +52,17 @@ public class SessionService
         await _context.SaveChangesAsync();
     }
     
+    public async Task InvalidateSessionsByUserIdAsync(string userId)
+    {
+        var sessions = _context.Sessions.Where(s => s.UserId == userId);
+        foreach (var session in sessions)
+        {
+            session.IsRevoked = true;
+        }
+
+        await _context.SaveChangesAsync();
+    }
+    
     public async Task<bool> IsSessionValidAsync(Guid sessionId, string refreshToken)
     {
         var session = await _context.Sessions.FindAsync(sessionId);
