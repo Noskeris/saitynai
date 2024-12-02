@@ -1,0 +1,13 @@
+﻿services:
+  saitynai-backend:
+    image: noskeris.azurecr.io/saitynai-backend
+    build:
+      context: .
+      dockerfile: saitynai-backend/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+        - SqlServer__ConnectionString=Server=nojus-saitynai.database.windows.net;Database=Saitynai;User Id=noskeris;Password=845HQA58A51zv1ZE1toF;Encrypt=True;TrustServerCertificate=False;
+        - Jwt__Secret=p0t7oqmieh2qk9j31c2mdz3e8pjb5zbn
+        - Jwt__Issuer=SaitynaiBackend
+        - Jwt__Audience=Saitynai

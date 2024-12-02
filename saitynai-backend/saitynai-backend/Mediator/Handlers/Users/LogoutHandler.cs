@@ -43,6 +43,14 @@ public class LogoutHandler : IRequestHandler<LogoutCommand>
         }
 
         await _sessionService.InvalidateSessionAsync(Guid.Parse(sessionId));
-        _httpContext.Response.Cookies.Delete("RefreshToken");
+        
+        var cookiesOptions = new CookieOptions()
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.None,
+            Secure = true
+        };
+
+        _httpContext.Response.Cookies.Delete("RefreshToken", cookiesOptions);
     }
 }

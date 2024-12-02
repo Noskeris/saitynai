@@ -82,7 +82,7 @@ public class RefreshHandler : IRequestHandler<RefreshCommand, AccessTokenRespons
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
+            SameSite = SameSiteMode.None,
             Expires = expiresAt,
             Secure = true
         };

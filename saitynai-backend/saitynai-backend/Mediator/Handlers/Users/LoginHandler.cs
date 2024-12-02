@@ -69,7 +69,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AccessTokenResponse>
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
+            SameSite = SameSiteMode.None,
             Expires = expiresAt,
             Secure = true
         };

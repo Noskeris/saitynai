@@ -66,33 +66,11 @@ public class TimeSlotController : ControllerBase
     }
 
     [HttpGet]
-    [AllowAnonymous]
     [Route("{timeSlotId}")]
     public async Task<IActionResult> GetTimeSlot(
         int organizationId,
         int eventId,
         int timeSlotId)
-    {
-        if (!User.HasRole(Role.User))
-        {
-            var result = await GetDefaultTimeSlotResponse(organizationId, eventId, timeSlotId);
-            return Ok(result);
-        }
-        else
-        {
-            var request = new GetTimeSlotUserQuery()
-            {
-                OrganizationId = organizationId,
-                EventId = eventId,
-                TimeSlotId = timeSlotId,
-                UserId = User.GetUserId()
-            };
-            var result = await _mediator.Send(request);
-            return Ok(result);
-        }
-    }
-
-    private async Task<TimeSlotResponse> GetDefaultTimeSlotResponse(int organizationId, int eventId, int timeSlotId)
     {
         string? organizerId = null;
 
@@ -110,7 +88,8 @@ public class TimeSlotController : ControllerBase
         };
 
         var result = await _mediator.Send(request);
-        return result;
+        
+        return Ok(result);
     }
 
     [HttpPost]

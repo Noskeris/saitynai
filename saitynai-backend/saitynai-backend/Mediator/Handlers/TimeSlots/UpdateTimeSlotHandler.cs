@@ -23,6 +23,7 @@ public class UpdateTimeSlotHandler : IRequestHandler<UpdateTimeSlotCommand, Time
         var organization = await _context.Organizations
             .Include(o => o.Events)
             .ThenInclude(o => o.TimeSlots)
+            .ThenInclude(o => o.Participants)
             .FirstOrDefaultAsync(o => o.Id == request.OrganizationId,
                 cancellationToken);
 
@@ -75,6 +76,11 @@ public class UpdateTimeSlotHandler : IRequestHandler<UpdateTimeSlotCommand, Time
                 && ts.EndTime > request.StartTime))
         {
             throw new ConflictException("TimeSlot interferes with other timeslots");
+        }
+        
+        if (request.MaxParticipants is not null && timeSlot.Participants.Count >= request.MaxParticipants)
+        {
+            throw new ConflictException("Time slot has more participants than allowed");
         }
         
         _mapper.Map(request, timeSlot);
