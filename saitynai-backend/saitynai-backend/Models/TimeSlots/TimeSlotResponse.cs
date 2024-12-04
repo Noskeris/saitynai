@@ -7,6 +7,5 @@ public class TimeSlotResponse
     public DateTime EndTime { get; set; }
     public int? MaxParticipants { get; set; }
     public int ParticipantsCount { get; set; }
-    public bool IsAvailable { get; set; }
     public bool IsCancelled { get; set; }
 }

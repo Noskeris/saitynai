@@ -10,6 +10,5 @@ public class CreateTimeSlotCommand : IRequest<TimeSlotResponse>
     public int EventId { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
-    public bool IsAvailable { get; set; }
     public int? MaxParticipants { get; set; }
 }

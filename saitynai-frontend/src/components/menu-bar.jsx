@@ -6,6 +6,7 @@ import { useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useUserName, useUserOrganizationId, useUserRole } from '../hooks/use-user';
 import { UserContext } from '../services/auth-provider';
+import toastService from '../services/toast-service';
 
 const MenuBar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -20,8 +21,8 @@ const MenuBar = () => {
     try {
       await user.logout();
       navigate('/');
-    } catch (error) {
-      console.error('Logout failed', error);
+    } catch (err) {
+      toastService.error(err.response.data.Errors.details[0]);
     }
   };
 

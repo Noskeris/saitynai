@@ -146,7 +146,7 @@ const formatDateTime = (dateTime) => {
 
 const isAvailableTimeSlot = (timeSlot) => {
     const isFullTimeSlot = timeSlot.maxParticipants ? timeSlot.participantsCount < timeSlot.maxParticipants : true;
-    return !isFullTimeSlot && !timeSlot.IsCancelled && timeSlot.IsAvailable && timeSlot.startTime > new Date();
+    return !isFullTimeSlot && !timeSlot.IsCancelled && timeSlot.startTime > new Date();
 };
 
 const GuestSignUpField = () => {

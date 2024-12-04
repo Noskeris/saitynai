@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useUpdateOrganization } from "../../hooks/use-organizations";
 import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, useMediaQuery } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import toastService from "../../services/toast-service";
 
 const EditOrganizationModal = ({ open, onClose, organization }) => {
     const updateOrganization = useUpdateOrganization();
@@ -29,8 +30,8 @@ const EditOrganizationModal = ({ open, onClose, organization }) => {
             try {
                 await updateOrganization.mutateAsync({ ...organization, ...values });
                 onClose();
-            } catch (error) {
-                console.error("Failed to update organization", error);
+            } catch (err) {
+                toastService.error(err.response.data.Errors.details[0]);
             } finally {
                 setSubmitting(false);
             }

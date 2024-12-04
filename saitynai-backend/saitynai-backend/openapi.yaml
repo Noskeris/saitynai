@@ -237,7 +237,6 @@ paths:
                 - id: 1
                   startTime: "2024-10-20T10:00:00Z"
                   endTime: "2024-10-20T12:00:00Z"
-                  isAvailable: true
                   isCancelled: false
         "404":
           $ref: "#/components/responses/notFound"
@@ -256,7 +255,6 @@ paths:
             example:
               startTime: "2024-10-20T10:00:00Z"
               endTime: "2024-10-20T12:00:00Z"
-              isAvailable: true
       responses:
         '201':
           $ref: "#/components/responses/timeSlotResponse"
@@ -298,7 +296,6 @@ paths:
             example:
               startTime: "2024-10-20T10:00:00Z"
               endTime: "2024-10-20T12:00:00Z"
-              isAvailable: true
               isCancelled: false
       responses:
         '200':
@@ -401,7 +398,6 @@ components:
       required:
         - startTime
         - endTime
-        - isAvailable
       properties:
         startTime:
           type: string
@@ -411,9 +407,6 @@ components:
           type: string
           format: date-time
           description: "Time slot end time"
-        isAvailable:
-          type: boolean
-          description: "Flag that says if time slot is available at the moment"
 
     UpdateEventCommand:
       type: object
@@ -486,7 +479,6 @@ components:
       required:
         - startTime
         - endTime
-        - isAvailable
         - isCancelled
       properties:
         startTime:
@@ -497,9 +489,6 @@ components:
           type: string
           format: date-time
           description: "Time slot end time"
-        isAvailable:
-          type: boolean
-          description: "Flag that says if time slot is available at the moment"
         isCancelled:
           type: boolean
           description: "Flag that says if time slot is cancelled or not"
@@ -569,9 +558,6 @@ components:
           type: string
           format: date-time
           description: "Time slot end time"
-        isAvailable:
-          type: boolean
-          description: "Flag that says if time slot is available at the moment"
         isCancelled:
           type: boolean
           description: "Flag that says if time slot is cancelled or not"
@@ -746,7 +732,6 @@ components:
             id: 1
             startTime: "2024-10-20T10:00:00Z"
             endTime: "2024-10-20T12:00:00Z"
-            isAvailable: true
             isCancelled: false
   parameters:
     organizationId:

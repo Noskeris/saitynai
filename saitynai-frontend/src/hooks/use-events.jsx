@@ -31,7 +31,7 @@ export const useGetEvent = (organizationId, eventId) => {
 export const useCreateEvent = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (organizationId, event) => createEvent(organizationId, event),
+        mutationFn: ({organizationId, event}) => createEvent(organizationId, event),
         onSuccess: () => {
             queryClient.invalidateQueries("get-events-list");
             toastService.success("Event created successfully");
@@ -43,7 +43,7 @@ export const useCreateEvent = () => {
 export const useUpdateEvent = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (organizationId, eventId, event) => updateEvent(organizationId, eventId, event),
+        mutationFn: ({organizationId, eventId, event}) => updateEvent(organizationId, eventId, event),
         onSuccess: () => {
             queryClient.invalidateQueries("get-events-list");
             queryClient.invalidateQueries("get-event");
@@ -56,7 +56,7 @@ export const useUpdateEvent = () => {
 export const useDeleteEvent = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (organizationId, eventId) => deleteEvent(organizationId, eventId),
+        mutationFn: ({organizationId, eventId}) => deleteEvent(organizationId, eventId),
         onSuccess: () => {
             queryClient.invalidateQueries("get-events-list");
             toastService.success("Event deleted successfully");

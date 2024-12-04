@@ -14,6 +14,7 @@ import { PrivateRoute } from './components/private-route';
 import Register from './pages/auth/register';
 import Event from './pages/event/event';
 import SetupOrganization from './pages/organization/setup-organization';
+import Events from './pages/events/events';
 
 const theme = createTheme({
   typography: {
@@ -70,7 +71,6 @@ const App = () => (
 
         <Route path="/organizations" element={<Organizations />} />
         <Route path="/organizations/:id" element={<Organization />} />
-        <Route path="/organizations/:id/events" element={<Organizations />} />
         <Route path="/organizations/:organizationId/events/:eventId" element={<Event />} />
 
         <Route
@@ -86,6 +86,14 @@ const App = () => (
           element={
             <PrivateRoute accessLevel={['Organizer']}>
               <SetupOrganization />
+            </PrivateRoute>
+          } />
+
+          <Route
+          path="/organizations/:id/events"
+          element={
+            <PrivateRoute accessLevel={['Organizer']}>
+              <Events />
             </PrivateRoute>
           } />
 

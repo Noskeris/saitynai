@@ -47,7 +47,7 @@ public class AddParticipantHandler : IRequestHandler<AddParticipantCommand>
             throw new ConflictException("User is already a participant");
         }
 
-        if (timeSlot.IsCancelled || !timeSlot.IsAvailable || timeSlot.StartTime < DateTime.Now)
+        if (timeSlot.IsCancelled || timeSlot.StartTime < DateTime.Now)
         {
             throw new ConflictException("Time slot is not available for registration");
         }

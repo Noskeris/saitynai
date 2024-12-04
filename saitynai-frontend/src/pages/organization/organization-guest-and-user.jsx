@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Box, Link, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, useMediaQuery } from "@mui/material";
+import { Container, Typography, Box, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, useMediaQuery } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useGetOrganization } from "../../hooks/use-organizations";
 import { useGetEventsList } from "../../hooks/use-events";
@@ -7,7 +7,7 @@ import { useGetEventsList } from "../../hooks/use-events";
 const OrganizationGuestAndUser = ({ organizationId }) => {
     const navigate = useNavigate();
     const { data: organizationData, isLoading: organizationIsLoading, error: organizationError } = useGetOrganization(organizationId);
-    const {data: eventsData, isLoading: eventsIsLoading, error: eventsError} = useGetEventsList(organizationId);
+    const { data: eventsData, isLoading: eventsIsLoading, error: eventsError } = useGetEventsList(organizationId);
     const [organization, setOrganization] = useState();
     const [events, setEvents] = useState([]);
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
@@ -76,9 +76,9 @@ const OrganizationGuestAndUser = ({ organizationId }) => {
                     <Typography sx={{ fontWeight: 'bold' }}>Website:</Typography>
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                    <Link href={organization.website} target="_blank">
+                    <Typography sx={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}>
                         {organization.website}
-                    </Link>
+                    </Typography>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
@@ -115,7 +115,7 @@ const OrganizationGuestAndUser = ({ organizationId }) => {
                         <TableHead>
                             <TableRow>
                                 <TableCell><strong>NAME</strong></TableCell>
-                                <TableCell><strong>LOCATION</strong></TableCell>
+                                {!isMobile && <TableCell><strong>LOCATION</strong></TableCell>}
                                 <TableCell></TableCell>
                             </TableRow>
                         </TableHead>

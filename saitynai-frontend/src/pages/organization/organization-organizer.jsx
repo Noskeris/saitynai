@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetOrganization, useDeleteOrganization } from "../../hooks/use-organizations";
 import EditOrganizationModal from "./edit-organization-modal";
 import { UserContext } from "../../services/auth-provider";
+import toastService from "../../services/toast-service";
 
 const OrganizationOrganizer = ({ organizationId }) => {
     const { data: organizationData, isLoading: organizationIsLoading, error: organizationError } = useGetOrganization(organizationId);
@@ -29,8 +30,8 @@ const OrganizationOrganizer = ({ organizationId }) => {
             await deleteOrganization.mutateAsync(organizationId);
             await user.renewToken();
             navigate("/");
-        } catch (error) {
-            console.error("Failed to delete organization", error);
+        } catch (err) {
+            toastService.error(err.response.data.Errors.details[0]);
         } finally {
             setDeleting(false);
             setDeleteConfirmOpen(false);
