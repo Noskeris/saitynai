@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Box, Link, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, useMediaQuery } from "@mui/material";
+import { Container, Typography, Box, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, useMediaQuery } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useGetOrganization } from "../../hooks/use-organizations";
 import { useGetEvent } from "../../hooks/use-events";
 import { useGetTimeSlotsList } from "../../hooks/use-timeslots";
 import toastService from '../../services/toast-service';
-import { useUserRole, useUserId } from '../../hooks/use-user';
-import { useRemoveParticipant, useAddParticipant } from "../../hooks/use-participants";
 import EditEventModal from "./edit-event-modal";
 import { Dialog, DialogContent, DialogTitle, DialogActions, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import { useDeleteEvent } from "../../hooks/use-events";
+import CreateTimeSlotModal from "./create-timeslot-modal";
 
 const EventOrganizer = ({ organizationId, eventId }) => {
     const { data: organizationData, isLoading: organizationIsLoading, error: organizationError } = useGetOrganization(organizationId);
@@ -21,7 +20,6 @@ const EventOrganizer = ({ organizationId, eventId }) => {
     const [timeSlots, setTimeSlots] = useState([]);
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
-    const userRole = useUserRole();
     const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [isDeleting, setDeleting] = useState(false);
@@ -44,7 +42,7 @@ const EventOrganizer = ({ organizationId, eventId }) => {
         setDeleting(true);
         try {
             console.log(eventId)
-            await deleteEvent.mutateAsync({organizationId, eventId});
+            await deleteEvent.mutateAsync({ organizationId, eventId });
             navigate(`/organizations/${organizationId}/events`);
         } catch (err) {
             toastService.error(err.response.data.Errors.details[0]);
@@ -183,7 +181,6 @@ const EventOrganizer = ({ organizationId, eventId }) => {
                             <TableRow>
                                 <TableCell><strong>START TIME</strong></TableCell>
                                 <TableCell><strong>END TIME</strong></TableCell>
-                                <TableCell><strong>AVAILABILITY</strong></TableCell>
                                 <TableCell></TableCell>
                             </TableRow>
                         </TableHead>
@@ -192,16 +189,15 @@ const EventOrganizer = ({ organizationId, eventId }) => {
                                 <TableRow key={timeSlot.id}>
                                     <TableCell>{formatDateTime(timeSlot.startTime)}</TableCell>
                                     <TableCell>{formatDateTime(timeSlot.endTime)}</TableCell>
-                                    {timeSlot.maxParticipants && <TableCell> {timeSlot.participantsCount}/{timeSlot.maxParticipants}</TableCell>}
-                                    {!timeSlot.maxParticipants && <TableCell>Unlimited</TableCell>}
-                                    <TableCell>{isAvailableTimeSlot(timeSlot) &&
-                                        ((userRole === undefined && <GuestSignUpField
-                                            key={`guest-signup-${timeSlot.id}`} />) ||
-                                            (userRole === 'User' && <UserSignUpField
-                                                key={`user-signup-${timeSlot.id}`}
-                                                organizationId={organizationId}
-                                                eventId={eventId}
-                                                timeSlot={timeSlot} />))}
+                                    <TableCell>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => {
+                                                navigate(`/organizations/${organizationId}/events/${eventId}/timeslots/${timeSlot.id}`);
+                                            }}
+                                        >
+                                            More Details
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -218,6 +214,16 @@ const EventOrganizer = ({ organizationId, eventId }) => {
                     event={event}
                 />
             )}
+
+            {isCreateModalOpen && (
+                <CreateTimeSlotModal
+                    open={isCreateModalOpen}
+                    onClose={() => setCreateModalOpen(false)}
+                    organizationId={organizationId}
+                    eventId={eventId}
+                />
+            )}
+
 
             <Dialog
                 open={isDeleteConfirmOpen}
@@ -262,98 +268,14 @@ const EventOrganizer = ({ organizationId, eventId }) => {
 };
 
 const formatDateTime = (dateTime) => {
-    return new Date(dateTime).toISOString().replace('T', ' ').slice(0, 16);
+    const date = new Date(dateTime);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
-
-const isAvailableTimeSlot = (timeSlot) => {
-    const isFullTimeSlot = timeSlot.maxParticipants ? timeSlot.participantsCount < timeSlot.maxParticipants : true;
-    return !isFullTimeSlot && !timeSlot.IsCancelled && timeSlot.startTime > new Date();
-};
-
-const GuestSignUpField = () => {
-    const navigate = useNavigate();
-    return (
-        <Typography variant="body2">
-            <Link
-                component="button"
-                onClick={() => navigate('/login')}
-                sx={{ cursor: 'pointer', textDecoration: 'underline' }}
-            >
-                Login
-            </Link>{' '}
-            or{' '}
-            <Link
-                component="button"
-                onClick={() => navigate('/register')}
-                sx={{ cursor: 'pointer', textDecoration: 'underline' }}
-            >
-                register
-            </Link>{' '}
-            to sign up to the available time slot
-        </Typography>
-    );
-};
-
-const UserSignUpField = ({organizationId, eventId, timeSlot}) => {
-    const removeParticipant = useRemoveParticipant();
-    const addParticipant = useAddParticipant();
-    const userId = useUserId();
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
-    const handleRemoveParticipant = async () => {
-        try {
-            setIsButtonDisabled(true);
-            await removeParticipant.mutateAsync({
-                organizationId,
-                eventId,
-                timeSlotId: timeSlot.id,
-                participantId: userId,
-            });
-        } catch (err) {
-            toastService.error(err.response.data.Errors.details[0]);
-        }
-        setIsButtonDisabled(false);
-    }
-
-    const handleAddParticipant = async () => {
-        try {
-            setIsButtonDisabled(true);
-            await addParticipant.mutateAsync({
-                organizationId: organizationId,
-                eventId: eventId,
-                timeSlotId: timeSlot.id,
-            });
-        } catch (err) {
-            toastService.error(err.response.data.Errors.details[0]);
-        }
-        setIsButtonDisabled(false);
-    }
-
-    return (
-        <>
-            {timeSlot.isParticipant && (
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleRemoveParticipant}
-                    disabled={isButtonDisabled}
-                >
-                    Withdraw
-                </Button>
-            )}
-            {timeSlot.isParticipant && (
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleAddParticipant}
-                    disabled={isButtonDisabled}
-                >
-                    Sign Up
-                </Button>
-            )
-            }
-        </>
-    );
-}
 
 export default EventOrganizer;

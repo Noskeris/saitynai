@@ -49,7 +49,7 @@ public class CreateTimeSlotHandler : IRequestHandler<CreateTimeSlotCommand, Time
                 && ts.StartTime < request.EndTime
                 && ts.EndTime > request.StartTime))
         {
-            throw new ConflictException("TimeSlot interferes with other timeslots");
+            throw new ConflictException("Time slot interferes with other event's time slots");
         }
         
         var timeSlot = _mapper.Map<TimeSlot>(request);

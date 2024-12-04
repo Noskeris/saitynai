@@ -31,7 +31,7 @@ export const useGetTimeSlot = (organizationId, eventId, timeslotId) => {
 export const useCreateTimeSlot = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (organizationId, eventId, timeslot) => createTimeslot(organizationId, eventId, timeslot),
+        mutationFn: ({organizationId, eventId, timeSlot}) => createTimeslot(organizationId, eventId, timeSlot),
         onSuccess: () => {
             queryClient.invalidateQueries("get-timeslots-list");
             toastService.success("Timeslot created successfully");

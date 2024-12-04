@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Container, Typography, Button, useMediaQuery, TableContainer, Table, TableHead, TableRow, TableBody, TableCell } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useGetEventsList } from "../../hooks/use-events";
-import { useUserOrganizationId } from "../../hooks/use-user";
 import CreateEventModal from "./create-event-modal";
 
 const EventsOrganizer = ({organizationId}) => {
