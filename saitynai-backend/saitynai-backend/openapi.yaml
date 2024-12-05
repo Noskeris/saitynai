@@ -4,8 +4,59 @@ info:
   description: It is an API for managing multiple organizations' events which can have multiple time slots.
   version: 1.0.0
 servers:
+  - url: https://nojus-saitynai-api.azurewebsites.net
   - url: https://localhost:7235
 paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterCommand'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/RegisterCommand'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/RegisterCommand'
+      responses:
+        '200':
+          description: Success
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginCommand'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/LoginCommand'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/LoginCommand'
+      responses:
+        '200':
+          description: Success
+  /api/auth/refresh:
+    post:
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Success
+  /api/auth/logout:
+    post:
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Success
   /api/v1/organizations/{organizationId}/events:
     get:
       summary: Get a list of organization's events
@@ -133,7 +184,6 @@ paths:
                   contactInfo: "info@wow.lt"
                   address: "Pasilaites g. 5, Vilnius"
                   website: "wow.lt"
-                  logo: "https://img.freepik.com/premium-vector/wow-speech-bubble-colorful-patch-clothes-badge-isolated-white-background_53562-21327.jpg?semt=ais_hybrid"
                   isNonProfit: false
 
     post:
@@ -151,7 +201,6 @@ paths:
               contactInfo: "info@wow.lt"
               address: "Pasilaites g. 5, Vilnius"
               website: "wow.lt"
-              logo: "https://img.freepik.com/premium-vector/wow-speech-bubble-colorful-patch-clothes-badge-isolated-white-background_53562-21327.jpg?semt=ais_hybrid"
               isNonProfit: false
       responses:
         '201':
@@ -191,7 +240,6 @@ paths:
               contactInfo: "info@wow.lt"
               address: "Pasilaites g. 5, Vilnius"
               website: "wow.lt"
-              logo: "https://img.freepik.com/premium-vector/wow-speech-bubble-colorful-patch-clothes-badge-isolated-white-background_53562-21327.jpg?semt=ais_hybrid"
       responses:
         '200':
           $ref: "#/components/responses/organizationResponse"
@@ -216,6 +264,88 @@ paths:
           $ref: "#/components/responses/notFound"
         "409":
           $ref: "#/components/responses/conflictOrganizationDelete"
+  /api/v1/organizations/{organizationId}/events/{eventId}/time-slots/{timeSlotId}/participants:
+    get:
+      tags:
+        - Participants
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: timeSlotId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+    post:
+      tags:
+        - Participants
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: timeSlotId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+  /api/v1/organizations/{organizationId}/events/{eventId}/time-slots/{timeSlotId}/participants/{participantId}:
+    delete:
+      tags:
+        - Participants
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: timeSlotId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: participantId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
   /api/v1/organizations/{organizationId}/events/{eventId}/time-slots:
     get:
       summary: Get a list of event's time slots
@@ -237,6 +367,8 @@ paths:
                 - id: 1
                   startTime: "2024-10-20T10:00:00Z"
                   endTime: "2024-10-20T12:00:00Z"
+                  maxParticipants: 30
+                  participantsCount: 40
                   isCancelled: false
         "404":
           $ref: "#/components/responses/notFound"
@@ -255,6 +387,8 @@ paths:
             example:
               startTime: "2024-10-20T10:00:00Z"
               endTime: "2024-10-20T12:00:00Z"
+              maxParticipants: 30
+              participantsCount: 40
       responses:
         '201':
           $ref: "#/components/responses/timeSlotResponse"
@@ -296,6 +430,8 @@ paths:
             example:
               startTime: "2024-10-20T10:00:00Z"
               endTime: "2024-10-20T12:00:00Z"
+              maxParticipants: 30
+              participantsCount: 40
               isCancelled: false
       responses:
         '200':
@@ -323,6 +459,45 @@ paths:
           $ref: "#/components/responses/notFound"
 components:
   schemas:
+    LoginCommand:
+      type: object
+      properties:
+        userName:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+      additionalProperties: false
+    RegisterCommand:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        surname:
+          type: string
+          nullable: true
+        userName:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        phoneNumber:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+        role:
+          $ref: '#/components/schemas/Role'
+      additionalProperties: false
+    Role:
+      enum:
+        - User
+        - Organizer
+      type: string
     CreateEventCommand:
       type: object
       required:
@@ -358,7 +533,6 @@ components:
         - contactInfo
         - address
         - website
-        - logo
         - isNonProfit
       properties:
         name:
@@ -384,11 +558,6 @@ components:
           type: string
           description: "Organization official website"
           minLength: 1
-        logo:
-          type: string
-          format: uri
-          description: "Organization logo url"
-          minLength: 1
         isNonProfit:
           type: boolean
           description: "Flag that says if organization purpose to get profit or not"
@@ -398,6 +567,8 @@ components:
       required:
         - startTime
         - endTime
+        - maxParticipants
+        - participantsCount
       properties:
         startTime:
           type: string
@@ -407,6 +578,14 @@ components:
           type: string
           format: date-time
           description: "Time slot end time"
+        maxParticipants:
+          type: integer
+          format: int32
+          description: "Max allowed number of participants"
+        participantsCount:
+          type: integer
+          format: int32
+          description: "Number of registered participants"
 
     UpdateEventCommand:
       type: object
@@ -443,7 +622,6 @@ components:
         - contactInfo
         - address
         - website
-        - logo
       properties:
         name:
           type: string
@@ -468,11 +646,6 @@ components:
           type: string
           description: "Organization official website"
           minLength: 1
-        logo:
-          type: string
-          format: uri
-          description: "Organization logo url"
-          minLength: 1
 
     UpdateTimeSlotCommand:
       type: object
@@ -480,6 +653,8 @@ components:
         - startTime
         - endTime
         - isCancelled
+        - maxParticipants
+        - participantsCount
       properties:
         startTime:
           type: string
@@ -492,6 +667,14 @@ components:
         isCancelled:
           type: boolean
           description: "Flag that says if time slot is cancelled or not"
+        maxParticipants:
+          type: integer
+          format: int32
+          description: "Max allowed number of participants"
+        participantsCount:
+          type: integer
+          format: int32
+          description: "Number of registered participants"
 
     OrganizationResponse:
       type: object
@@ -515,10 +698,6 @@ components:
         website:
           type: string
           description: "Organization official website"
-        logo:
-          type: string
-          format: uri
-          description: "Organization logo url"
         isNonProfit:
           type: boolean
           description: "Flag that says if organization purpose to get profit or not"
@@ -558,6 +737,14 @@ components:
           type: string
           format: date-time
           description: "Time slot end time"
+        maxParticipants:
+          type: integer
+          format: int32
+          description: "Max allowed number of participants"
+        participantsCount:
+          type: integer
+          format: int32
+          description: "Number of registered participants"
         isCancelled:
           type: boolean
           description: "Flag that says if time slot is cancelled or not"
@@ -575,7 +762,13 @@ components:
         errors:
           type: object
           description: "A map of detailed errors for every property ([property => error])"
-  
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      description: 'Enter: Bearer <token>'
+      name: Authorization
+      in: header
+
   responses:
     unprocessableEntity:
       description: "Unprocessable entity response"
@@ -704,7 +897,6 @@ components:
             contactInfo: "info@wow.lt"
             address: "Pasilaites g. 5, Vilnius"
             website: "wow.lt"
-            logo: "https://img.freepik.com/premium-vector/wow-speech-bubble-colorful-patch-clothes-badge-isolated-white-background_53562-21327.jpg?semt=ais_hybrid"
             isNonProfit: false
     eventResponse:
       description: Event object response
@@ -733,6 +925,8 @@ components:
             startTime: "2024-10-20T10:00:00Z"
             endTime: "2024-10-20T12:00:00Z"
             isCancelled: false
+            maxParticipants: 30
+            participantsCount: 40
   parameters:
     organizationId:
       name: organizationId
@@ -769,3 +963,6 @@ tags:
     description: Operations related to organizations
   - name: TimeSlot
     description: Operations related to time slots
+
+security:
+  - Bearer: []

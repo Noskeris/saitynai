@@ -40,4 +40,9 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="swagger/swagger.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 </Project>

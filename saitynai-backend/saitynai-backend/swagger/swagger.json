@@ -1,0 +1,1452 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Event managing API",
+    "description": "It is an API for managing multiple organizations' events which can have multiple time slots.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:7235"
+    },
+    {
+      "url": "https://nojus-saitynai-api.azurewebsites.net"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organizationId}/events": {
+      "get": {
+        "summary": "Get a list of organization's events",
+        "tags": [
+          "Event"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/EventResponse"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Book club",
+                    "description": "Doing great things",
+                    "location": "Vingio parkas",
+                    "requirements": "Love to read books"
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an event",
+        "tags": [
+          "Event"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventCommand"
+              },
+              "example": {
+                "name": "Book club",
+                "description": "Doing great things",
+                "location": "Vingio parkas",
+                "requirements": "Love to read books"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/eventResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflictEvent"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organizationId}/events/{eventId}": {
+      "get": {
+        "summary": "Get event details",
+        "tags": [
+          "Event"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          },
+          {
+            "$ref": "#/components/parameters/eventId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/eventResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update event details",
+        "tags": [
+          "Event"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          },
+          {
+            "$ref": "#/components/parameters/eventId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEventCommand"
+              },
+              "example": {
+                "name": "Book club",
+                "description": "Doing great things",
+                "location": "Vingio parkas",
+                "requirements": "Love to read books"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/eventResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflictEvent"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an event",
+        "tags": [
+          "Event"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          },
+          {
+            "$ref": "#/components/parameters/eventId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflictEventDelete"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations": {
+      "get": {
+        "summary": "Get a list of all organizations",
+        "tags": [
+          "Organization"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of organizations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganizationResponse"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "UAB WoW",
+                    "description": "Doing great things",
+                    "contactInfo": "info@wow.lt",
+                    "address": "Pasilaites g. 5, Vilnius",
+                    "website": "wow.lt",
+                    "isNonProfit": false
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an organization",
+        "tags": [
+          "Organization"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationCommand"
+              },
+              "example": {
+                "name": "UAB WoW",
+                "description": "Doing great things",
+                "contactInfo": "info@wow.lt",
+                "address": "Pasilaites g. 5, Vilnius",
+                "website": "wow.lt",
+                "isNonProfit": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/organizationResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflictOrganization"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organizationId}": {
+      "get": {
+        "summary": "Get organization details",
+        "tags": [
+          "Organization"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/organizationResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update organization details",
+        "tags": [
+          "Organization"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrganizationCommand"
+              },
+              "example": {
+                "name": "UAB WoW",
+                "description": "Doing great things",
+                "contactInfo": "info@wow.lt",
+                "address": "Pasilaites g. 5, Vilnius",
+                "website": "wow.lt"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/organizationResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflictOrganization"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an organization",
+        "tags": [
+          "Organization"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflictOrganizationDelete"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organizationId}/events/{eventId}/time-slots/{timeSlotId}/participants": {
+      "get": {
+        "tags": [
+          "Participants"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "timeSlotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Participants"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "timeSlotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organizationId}/events/{eventId}/time-slots/{timeSlotId}/participants/{participantId}": {
+      "delete": {
+        "tags": [
+          "Participants"
+        ],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "timeSlotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "participantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organizationId}/events/{eventId}/time-slots": {
+      "get": {
+        "summary": "Get a list of event's time slots",
+        "tags": [
+          "TimeSlot"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          },
+          {
+            "$ref": "#/components/parameters/eventId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Time slot object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/TimeSlotResponse"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "startTime": "2024-10-20T10:00:00Z",
+                    "endTime": "2024-10-20T12:00:00Z",
+                    "maxParticipants": 30,
+                    "participantsCount": 40,
+                    "isCancelled": false
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add new time slot to an event",
+        "tags": [
+          "TimeSlot"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          },
+          {
+            "$ref": "#/components/parameters/eventId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTimeSlotCommand"
+              },
+              "example": {
+                "startTime": "2024-10-20T10:00:00Z",
+                "endTime": "2024-10-20T12:00:00Z",
+                "maxParticipants": 30,
+                "participantsCount": 40
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/timeSlotResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflictTimeSlot"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organizationId}/events/{eventId}/time-slots/{timeSlotId}": {
+      "get": {
+        "summary": "Get time slot details",
+        "tags": [
+          "TimeSlot"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          },
+          {
+            "$ref": "#/components/parameters/eventId"
+          },
+          {
+            "$ref": "#/components/parameters/timeSlotId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/timeSlotResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update time slot details",
+        "tags": [
+          "TimeSlot"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          },
+          {
+            "$ref": "#/components/parameters/eventId"
+          },
+          {
+            "$ref": "#/components/parameters/timeSlotId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTimeSlotCommand"
+              },
+              "example": {
+                "startTime": "2024-10-20T10:00:00Z",
+                "endTime": "2024-10-20T12:00:00Z",
+                "maxParticipants": 30,
+                "participantsCount": 40,
+                "isCancelled": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/timeSlotResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflictTimeSlot"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete time slot",
+        "tags": [
+          "TimeSlot"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/organizationId"
+          },
+          {
+            "$ref": "#/components/parameters/eventId"
+          },
+          {
+            "$ref": "#/components/parameters/timeSlotId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginCommand": {
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegisterCommand": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "surname": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Role": {
+        "enum": [
+          "User",
+          "Organizer"
+        ],
+        "type": "string"
+      },
+      "CreateEventCommand": {
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "location",
+          "requirements"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Event name",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "description": "Event description",
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "description": "Event location",
+            "minLength": 1
+          },
+          "requirements": {
+            "type": "string",
+            "description": "Event requirements",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        }
+      },
+      "CreateOrganizationCommand": {
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "contactInfo",
+          "address",
+          "website",
+          "isNonProfit"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Organization name",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "description": "Description about organization",
+            "minLength": 1
+          },
+          "contactInfo": {
+            "type": "string",
+            "description": "Organization contact information e.g. phone number or email",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "address": {
+            "type": "string",
+            "description": "Organization address",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "website": {
+            "type": "string",
+            "description": "Organization official website",
+            "minLength": 1
+          },
+          "isNonProfit": {
+            "type": "boolean",
+            "description": "Flag that says if organization purpose to get profit or not"
+          }
+        }
+      },
+      "CreateTimeSlotCommand": {
+        "type": "object",
+        "required": [
+          "startTime",
+          "endTime",
+          "maxParticipants",
+          "participantsCount"
+        ],
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time slot start time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time slot end time"
+          },
+          "maxParticipants": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Max allowed number of participants"
+          },
+          "participantsCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of registered participants"
+          }
+        }
+      },
+      "UpdateEventCommand": {
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "location",
+          "requirements"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Event name",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "description": "Event description",
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "description": "Event location",
+            "minLength": 1
+          },
+          "requirements": {
+            "type": "string",
+            "description": "Event requirements",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        }
+      },
+      "UpdateOrganizationCommand": {
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "contactInfo",
+          "address",
+          "website"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Organization name",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "description": "Description about organization",
+            "minLength": 1
+          },
+          "contactInfo": {
+            "type": "string",
+            "description": "Organization contact information e.g. phone number or email",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "address": {
+            "type": "string",
+            "description": "Organization address",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "website": {
+            "type": "string",
+            "description": "Organization official website",
+            "minLength": 1
+          }
+        }
+      },
+      "UpdateTimeSlotCommand": {
+        "type": "object",
+        "required": [
+          "startTime",
+          "endTime",
+          "isCancelled",
+          "maxParticipants",
+          "participantsCount"
+        ],
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time slot start time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time slot end time"
+          },
+          "isCancelled": {
+            "type": "boolean",
+            "description": "Flag that says if time slot is cancelled or not"
+          },
+          "maxParticipants": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Max allowed number of participants"
+          },
+          "participantsCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of registered participants"
+          }
+        }
+      },
+      "OrganizationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Organization object's ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Organization name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description about organization"
+          },
+          "contactInfo": {
+            "type": "string",
+            "description": "Organization contact information e.g. phone number or email"
+          },
+          "address": {
+            "type": "string",
+            "description": "Organization address"
+          },
+          "website": {
+            "type": "string",
+            "description": "Organization official website"
+          },
+          "isNonProfit": {
+            "type": "boolean",
+            "description": "Flag that says if organization purpose to get profit or not"
+          }
+        }
+      },
+      "EventResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Event object's ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Event name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Event description"
+          },
+          "location": {
+            "type": "string",
+            "description": "Event location"
+          },
+          "requirements": {
+            "type": "string",
+            "description": "Event requirements"
+          }
+        }
+      },
+      "TimeSlotResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Time slot object's ID"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time slot start time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time slot end time"
+          },
+          "maxParticipants": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Max allowed number of participants"
+          },
+          "participantsCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of registered participants"
+          },
+          "isCancelled": {
+            "type": "boolean",
+            "description": "Flag that says if time slot is cancelled or not"
+          }
+        }
+      },
+      "ErrorModel": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Error status code"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error status code meaning"
+          },
+          "errors": {
+            "type": "object",
+            "description": "A map of detailed errors for every property ([property => error])"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "Enter: Bearer <token>",
+        "name": "Authorization",
+        "in": "header"
+      }
+    },
+    "responses": {
+      "unprocessableEntity": {
+        "description": "Unprocessable entity response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/ErrorModel"
+              }
+            },
+            "example": {
+              "status": 422,
+              "message": "Unprocessable Entity",
+              "errors": {
+                "Name": [
+                  "'Name' must not be empty."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "badRequest": {
+        "description": "Bad request response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/ErrorModel"
+              }
+            },
+            "example": {
+              "status": 400,
+              "message": "Invalid Request Data",
+              "errors": {
+                "$": [
+                  "The JSON value could not be converted to saitynai_backend.Mediator.Commands.Organizations.CreateOrganizationCommand. Path: $ | LineNumber: 1 | BytePositionInLine: 8."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "notFound": {
+        "description": "Resource was not found response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/ErrorModel"
+              }
+            },
+            "example": {
+              "status": 404,
+              "message": "Not found",
+              "errors": {
+                "details": [
+                  "Organization not found"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "conflictTimeSlot": {
+        "description": "Conflict with the current state of a resource response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/ErrorModel"
+              }
+            },
+            "example": {
+              "status": 409,
+              "message": "Conflict",
+              "errors": {
+                "details": [
+                  "Time slot interferes with other timeslots"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "conflictOrganizationDelete": {
+        "description": "Conflict with the current state of a resource response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/ErrorModel"
+              }
+            },
+            "example": {
+              "status": 409,
+              "message": "Conflict",
+              "errors": {
+                "details": [
+                  "Cannot delete organization with active time slots"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "conflictOrganization": {
+        "description": "Conflict with the current state of a resource response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/ErrorModel"
+              }
+            },
+            "example": {
+              "status": 409,
+              "message": "Conflict",
+              "errors": {
+                "details": [
+                  "Organization with this name already exists"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "conflictEventDelete": {
+        "description": "Conflict with the current state of a resource response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/ErrorModel"
+              }
+            },
+            "example": {
+              "status": 409,
+              "message": "Conflict",
+              "errors": {
+                "details": [
+                  "Cannot delete event with active time slots"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "conflictEvent": {
+        "description": "Conflict with the current state of a resource response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/ErrorModel"
+              }
+            },
+            "example": {
+              "status": 409,
+              "message": "Conflict",
+              "errors": {
+                "details": [
+                  "Event with this name already exists"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "organizationResponse": {
+        "description": "Organization object response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/OrganizationResponse"
+              }
+            },
+            "example": {
+              "id": 1,
+              "name": "UAB WoW",
+              "description": "Doing great things",
+              "contactInfo": "info@wow.lt",
+              "address": "Pasilaites g. 5, Vilnius",
+              "website": "wow.lt",
+              "isNonProfit": false
+            }
+          }
+        }
+      },
+      "eventResponse": {
+        "description": "Event object response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/EventResponse"
+              }
+            },
+            "example": {
+              "id": 1,
+              "name": "Book club",
+              "description": "Doing great things",
+              "location": "Vingio parkas",
+              "requirements": "Love to read books"
+            }
+          }
+        }
+      },
+      "timeSlotResponse": {
+        "description": "Time slot object response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/components/schemas/TimeSlotResponse"
+              }
+            },
+            "example": {
+              "id": 1,
+              "startTime": "2024-10-20T10:00:00Z",
+              "endTime": "2024-10-20T12:00:00Z",
+              "isCancelled": false,
+              "maxParticipants": 30,
+              "participantsCount": 40
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "organizationId": {
+        "name": "organizationId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1
+        },
+        "description": "The unique identifier of the organization"
+      },
+      "eventId": {
+        "name": "eventId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1
+        },
+        "description": "The unique identifier of the event"
+      },
+      "timeSlotId": {
+        "name": "timeSlotId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1
+        },
+        "description": "The unique identifier of the time slot"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Event",
+      "description": "Operations related to events"
+    },
+    {
+      "name": "Organization",
+      "description": "Operations related to organizations"
+    },
+    {
+      "name": "TimeSlot",
+      "description": "Operations related to time slots"
+    }
+  ],
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
+}

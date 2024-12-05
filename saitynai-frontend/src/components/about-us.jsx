@@ -38,9 +38,15 @@ const AboutUs = () => {
                 </Box>
                 <DialogContent>
                     <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vehicula dolor nec odio bibendum, sed
-                        facilisis nulla scelerisque. Integer quis nibh ut sapien eleifend laoreet at ut elit.
+                        This system was created as a final project for the KTU Saitynai module. The system is designed
+                        for organizations to manage their organized events. The system allows organizations to create,
+                        edit, delete, and view events, as well as view participants. Participants can register for
+                        events or cancel their registration. Guests can do everything participants can, except for
+                        registering for events.
                     </Typography>
+
+                    <img src="/ktu-logo-lt-pilnas.png" alt="KTU logo" style={{ width: '100%', height: 'auto' }} />
+
                 </DialogContent>
             </Dialog>
         </>
