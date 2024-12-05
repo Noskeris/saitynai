@@ -141,12 +141,24 @@ const EventGuestAndUser = ({ organizationId, eventId }) => {
 };
 
 const formatDateTime = (dateTime) => {
-    return new Date(dateTime).toISOString().replace('T', ' ').slice(0, 16);
+    const date = new Date(dateTime);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
 const isAvailableTimeSlot = (timeSlot) => {
-    const isFullTimeSlot = timeSlot.maxParticipants ? timeSlot.participantsCount < timeSlot.maxParticipants : true;
-    return !isFullTimeSlot && !timeSlot.IsCancelled && timeSlot.startTime > new Date();
+    let isFullTimeSlot = timeSlot.maxParticipants ? timeSlot.participantsCount >= timeSlot.maxParticipants : false;
+
+    if (timeSlot.isParticipant) {
+        isFullTimeSlot = false;
+    }
+
+    return !isFullTimeSlot && !timeSlot.isCancelled && new Date(timeSlot.startTime) > new Date();
 };
 
 const GuestSignUpField = () => {
@@ -220,7 +232,7 @@ const UserSignUpField = ({organizationId, eventId, timeSlot}) => {
                     Withdraw
                 </Button>
             )}
-            {timeSlot.isParticipant && (
+            {!timeSlot.isParticipant && (
                 <Button
                     variant="contained"
                     color="primary"

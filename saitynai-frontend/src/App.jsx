@@ -15,6 +15,7 @@ import Register from './pages/auth/register';
 import Event from './pages/event/event';
 import SetupOrganization from './pages/organization/setup-organization';
 import Events from './pages/events/events';
+import TimeSlot from './pages/timeslot/timeslot';
 
 const theme = createTheme({
   typography: {
@@ -74,10 +75,10 @@ const App = () => (
         <Route path="/organizations/:organizationId/events/:eventId" element={<Event />} />
 
         <Route
-          path="/organizations/:organizationId/events/:eventId/timeslots/:timeslotId"
+          path="/organizations/:organizationId/events/:eventId/timeslots/:timeSlotId"
           element={
             <PrivateRoute accessLevel={['Organizer']}>
-              <Organizations />
+              <TimeSlot />
             </PrivateRoute>
           } />
 

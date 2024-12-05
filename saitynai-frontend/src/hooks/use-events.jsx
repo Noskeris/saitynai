@@ -45,7 +45,6 @@ export const useUpdateEvent = () => {
     return useMutation({
         mutationFn: ({organizationId, eventId, event}) => updateEvent(organizationId, eventId, event),
         onSuccess: () => {
-            queryClient.invalidateQueries("get-events-list");
             queryClient.invalidateQueries("get-event");
             toastService.success("Event updated successfully");
         },

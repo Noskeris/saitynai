@@ -41,7 +41,6 @@ const EventOrganizer = ({ organizationId, eventId }) => {
     const handleDelete = async () => {
         setDeleting(true);
         try {
-            console.log(eventId)
             await deleteEvent.mutateAsync({ organizationId, eventId });
             navigate(`/organizations/${organizationId}/events`);
         } catch (err) {

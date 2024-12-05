@@ -48,17 +48,17 @@ public class UpdateTimeSlotHandler : IRequestHandler<UpdateTimeSlotCommand, Time
         
         if (timeSlot == null)
         {
-            throw new NotFoundException("TimeSlot not found");
+            throw new NotFoundException("Time slot not found");
         }
 
         if (timeSlot.IsCancelled)
         {
-            throw new ConflictException("TimeSlot is already cancelled and changes no longer possible");
+            throw new ConflictException("Time slot is already cancelled and changes no longer possible");
         }
 
         if (timeSlot.StartTime < DateTime.Now)
         {
-            throw new ConflictException("TimeSlot is in the past and changes no longer possible");
+            throw new ConflictException("Time slot is in the past and changes no longer possible");
         }
 
         if (request.IsCancelled)
@@ -75,7 +75,7 @@ public class UpdateTimeSlotHandler : IRequestHandler<UpdateTimeSlotCommand, Time
                 && ts.StartTime < request.EndTime
                 && ts.EndTime > request.StartTime))
         {
-            throw new ConflictException("TimeSlot interferes with other timeslots");
+            throw new ConflictException("Time slot interferes with other timeslots");
         }
         
         if (request.MaxParticipants is not null && timeSlot.Participants.Count >= request.MaxParticipants)

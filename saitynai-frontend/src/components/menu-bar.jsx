@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { useUserName, useUserOrganizationId, useUserRole } from '../hooks/use-user';
 import { UserContext } from '../services/auth-provider';
 import toastService from '../services/toast-service';
+import { useQueryClient } from "@tanstack/react-query";
+
 
 const MenuBar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -16,10 +18,13 @@ const MenuBar = () => {
   const user = useContext(UserContext);
   const userName = useUserName();
   const organizationId = useUserOrganizationId();
+  const queryClient = useQueryClient();
+  
 
   const handleLogout = async () => {
     try {
       await user.logout();
+      queryClient.clear();
       navigate('/');
     } catch (err) {
       toastService.error(err.response.data.Errors.details[0]);

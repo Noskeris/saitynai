@@ -43,11 +43,10 @@ export const useCreateTimeSlot = () => {
 export const useUpdateTimeSlot = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (organizationId, eventId, timeslotId, timeslot) => updateTimeslot(organizationId, eventId, timeslotId, timeslot),
+        mutationFn: ({organizationId, eventId, timeSlotId, timeSlot}) => updateTimeslot(organizationId, eventId, timeSlotId, timeSlot),
         onSuccess: () => {
             queryClient.invalidateQueries("get-timeslots-list");
             queryClient.invalidateQueries("get-timeslot");
-            toastService.success("Timeslot updated successfully");
         },
         retry: 1,
     });
@@ -56,7 +55,7 @@ export const useUpdateTimeSlot = () => {
 export const useDeleteTimeSlot = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (organizationId, eventId, timeslotId) => deleteTimeslot(organizationId, eventId, timeslotId),
+        mutationFn: ({organizationId, eventId, timeSlotId}) => deleteTimeslot(organizationId, eventId, timeSlotId),
         onSuccess: () => {
             queryClient.invalidateQueries("get-timeslots-list");
             toastService.success("Timeslot deleted successfully");

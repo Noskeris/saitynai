@@ -632,7 +632,7 @@ components:
             message: "Conflict"
             errors:
               details:
-                - "TimeSlot interferes with other timeslots"
+                - "Time slot interferes with other timeslots"
     conflictOrganizationDelete:
       description: "Conflict with the current state of a resource response"
       content:
